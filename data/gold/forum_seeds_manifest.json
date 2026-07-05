@@ -1,0 +1,8 @@
+{
+  "source": "https://forum.langchain.com",
+  "categories": [
+    "OSS Product Help"
+  ],
+  "n_seeds": 163,
+  "note": "gold-eval seeds only; forum answers not in retrieval corpus (D-019)"
+}

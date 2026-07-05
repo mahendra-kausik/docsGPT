@@ -20,6 +20,24 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_YAML = PROJECT_ROOT / "config.yaml"
 
 
+class ForumConfig(BaseModel):
+    """LangChain Forum (Discourse) ingestion -> GOLD-EVAL SEEDS ONLY (Layer 1b).
+
+    GitHub Discussions migrated to forum.langchain.com in mid-2025 (D-018).
+    Solved topics = natural relevance labels (D-003). Their questions become eval
+    items whose gold targets are MIT docs chunks (mapped at Layer 3); forum answer
+    text is NOT added to the retrieval corpus (D-019).
+    """
+
+    base_url: str = "https://forum.langchain.com"
+    categories: list[str] = ["OSS Product Help"]  # by display name; solved topics only
+    max_pages_per_category: int = 20
+    request_delay_s: float = 0.2                   # be polite to the public forum
+    raw_dir: str = "data/raw/forum"                # cached topic JSON (git-ignored)
+    # committed gold seeds: question + metadata, no answer body (D-019)
+    seeds_jsonl: str = "data/gold/forum_seeds.jsonl"
+
+
 class CorpusConfig(BaseModel):
     """Where the docs corpus comes from and which slice to ingest (Layer 1a).
 
@@ -91,6 +109,7 @@ class Settings(BaseSettings):
     corpus_jsonl: str = "data/corpus/chunks.jsonl"
     results_dir: str = "results"
     corpus: CorpusConfig = CorpusConfig()
+    forum: ForumConfig = ForumConfig()
 
 
 @lru_cache

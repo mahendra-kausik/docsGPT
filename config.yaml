@@ -39,3 +39,16 @@ corpus:
     - src/oss/concepts/**
     - src/oss/integrations/**
     - src/oss/*.mdx
+
+# --- LangChain Forum source (Layer 1b: solved topics = natural gold labels, D-018/D-019) ---
+# GitHub Discussions migrated to forum.langchain.com (Discourse) in mid-2025. We use SOLVED
+# topics as GOLD-EVAL SEEDS ONLY (question -> MIT docs chunk at Layer 3); forum answer text is
+# never added to the retrieval corpus. Public JSON API, no auth. robots.txt allows /c/ and /t/.
+forum:
+  base_url: https://forum.langchain.com
+  categories:                               # display names; only 'solved' topics are kept
+    - OSS Product Help
+  max_pages_per_category: 20
+  request_delay_s: 0.2                       # polite pacing for the public forum
+  raw_dir: data/raw/forum                    # cached topic JSON incl. answers (git-ignored)
+  seeds_jsonl: data/gold/forum_seeds.jsonl   # committed gold seeds: question + metadata (no answer body)
