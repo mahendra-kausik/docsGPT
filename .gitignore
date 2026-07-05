@@ -1,0 +1,34 @@
+# --- Secrets (NEVER commit) ---
+.env
+*.env
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Virtual environments ---
+.venv/
+venv/
+
+# --- Tooling caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Model / HF caches (downloaded locally, not versioned) ---
+.cache/
+models/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# NOTE: eval results (results/) and the chunked corpus (data/corpus/*.jsonl) are the
+# durable, reproducible record (DECISIONS D-004, D-010) and are intentionally NOT ignored.

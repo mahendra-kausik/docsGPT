@@ -1,0 +1,13 @@
+# Layer 0 scaffold dependencies — EXACT pins for reproducibility (CLAUDE.md §4).
+# Heavy ML/retrieval deps (torch, sentence-transformers, qdrant-client, langgraph,
+# ragas, fastapi, ...) are added in the layer that first needs them (DECISIONS D-015).
+
+# --- Runtime ---
+pydantic==2.9.2
+pydantic-settings==2.5.2
+pyyaml==6.0.2
+python-dotenv==1.0.1
+
+# --- Dev / tooling ---
+pytest==8.3.3
+ruff==0.6.9

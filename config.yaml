@@ -1,0 +1,22 @@
+# Single source of truth for all TUNABLES (CLAUDE.md §6: config over constants).
+# Secrets/keys live in .env (never here). Flip a value here to run an ablation.
+# These tunables take precedence over any matching value in .env (see src/config.py).
+
+# --- Model ids (verify live free-tier limits per PROJECT_PLAN §7 before relying on them) ---
+embedding_model: BAAI/bge-small-en-v1.5   # 384-dim default; benchmark vs bge-base (D-005)
+reranker_model: BAAI/bge-reranker-base    # cross-encoder, CPU (D-007)
+synthesis_model: gemini-flash             # final answer synthesis (verify exact id in AI Studio)
+cheap_model: groq/llama-3.1-8b-instant    # decompose/grade/rewrite + RAGAS judge (D-008)
+
+# --- Retrieval / fusion ---
+rrf_k: 60             # RRF constant: score(d) = sum 1/(k + rank_i(d))  (D-006)
+retrieve_top_k: 50    # candidates fetched before reranking
+rerank_top_n: 6       # candidates kept after cross-encoder rerank (D-007)
+
+# --- Chunking (Layer 1: structure-aware; never split a code block) ---
+chunk_size: 1000      # target characters per chunk
+chunk_overlap: 150
+
+# --- Paths ---
+corpus_jsonl: data/corpus/chunks.jsonl    # durable chunked corpus, the source of truth (D-004)
+results_dir: results                       # eval results JSON — reproducible record (D-010)
