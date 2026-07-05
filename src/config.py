@@ -13,10 +13,34 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_YAML = PROJECT_ROOT / "config.yaml"
+
+
+class CorpusConfig(BaseModel):
+    """Where the docs corpus comes from and which slice to ingest (Layer 1a).
+
+    Why nested: keeps the several corpus-sourcing knobs grouped and readable in
+    config.yaml while staying part of the single Settings surface.
+    """
+
+    repo: str = "https://github.com/langchain-ai/docs.git"
+    ref: str = "main"
+    raw_dir: str = "data/raw/langchain-docs"
+    snippets_dir: str = "src/snippets"
+    docs_base_url: str = "https://docs.langchain.com"
+    include_globs: list[str] = [
+        "src/oss/python/**",
+        "src/oss/langchain/**",
+        "src/oss/langgraph/**",
+        "src/oss/deepagents/**",
+        "src/oss/concepts/**",
+        "src/oss/integrations/**",
+        "src/oss/*.mdx",
+    ]
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -63,8 +87,10 @@ class Settings(BaseSettings):
     rerank_top_n: int = 6
     chunk_size: int = 1000
     chunk_overlap: int = 150
+    min_chunk_chars: int = 24
     corpus_jsonl: str = "data/corpus/chunks.jsonl"
     results_dir: str = "results"
+    corpus: CorpusConfig = CorpusConfig()
 
 
 @lru_cache

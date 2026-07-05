@@ -1,0 +1,18 @@
+{
+  "repo": "https://github.com/langchain-ai/docs.git",
+  "ref": "main",
+  "sha": "662d399",
+  "include_globs": [
+    "src/oss/python/**",
+    "src/oss/langchain/**",
+    "src/oss/langgraph/**",
+    "src/oss/deepagents/**",
+    "src/oss/concepts/**",
+    "src/oss/integrations/**",
+    "src/oss/*.mdx"
+  ],
+  "chunk_size": 1000,
+  "chunk_overlap": 150,
+  "n_chunks": 11035,
+  "n_files": 751
+}

@@ -14,9 +14,28 @@ retrieve_top_k: 50    # candidates fetched before reranking
 rerank_top_n: 6       # candidates kept after cross-encoder rerank (D-007)
 
 # --- Chunking (Layer 1: structure-aware; never split a code block) ---
-chunk_size: 1000      # target characters per chunk
+chunk_size: 1000        # target characters per chunk
 chunk_overlap: 150
+min_chunk_chars: 24     # drop near-empty chunks (heading-only / lone image link) with no code
 
 # --- Paths ---
 corpus_jsonl: data/corpus/chunks.jsonl    # durable chunked corpus, the source of truth (D-004)
 results_dir: results                       # eval results JSON — reproducible record (D-010)
+
+# --- Corpus source (Layer 1a: LangChain/LangGraph OSS docs, MIT-licensed) ---
+# Ingested from the MIT-licensed langchain-ai/docs repo (.mdx source), Python-focused
+# scope (D-016). The raw clone lives in raw_dir (git-ignored); chunks.jsonl is committed.
+corpus:
+  repo: https://github.com/langchain-ai/docs.git
+  ref: main                                 # cloned, then the exact SHA is pinned in the manifest
+  raw_dir: data/raw/langchain-docs
+  snippets_dir: src/snippets                # for best-effort <Snippet>/import inlining
+  docs_base_url: https://docs.langchain.com # local path -> public URL for citations
+  include_globs:                            # Python-focused OSS docs (excludes js, langsmith, snippets, reference, contributing)
+    - src/oss/python/**
+    - src/oss/langchain/**
+    - src/oss/langgraph/**
+    - src/oss/deepagents/**
+    - src/oss/concepts/**
+    - src/oss/integrations/**
+    - src/oss/*.mdx

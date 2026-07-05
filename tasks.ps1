@@ -33,9 +33,10 @@ switch ($task) {
     "test"   { Assert-Venv; & $py -m pytest }
     "lint"   { Assert-Venv; & $py -m ruff check . }
     "format" { Assert-Venv; & $py -m ruff format . }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | help" }
+    "ingest" { Assert-Venv; & $py -m src.ingest.corpus @args }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | help"
         exit 1
     }
 }

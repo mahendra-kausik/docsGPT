@@ -4,15 +4,18 @@
 > Keep it short. This is how a new session resumes cleanly without re-reading everything.
 
 ## Current status
-- **Active layer:** Layer 1 — Corpus ingestion & chunking (NOT STARTED)
-- **Last completed layer:** Layer 0 — Repo scaffold & config (gate passed 2026-07-05)
-- **Build order & gates:** see `PROJECT_PLAN.md` §4.
-- **Env:** Windows 11 / Windows PowerShell 5.1; Python 3.13.3; `.venv` at repo root. Run tasks with `./tasks.ps1 <setup|test|lint|format>`.
+- **Active layer:** Layer 1b — GitHub Discussions/Issues ingestion (NOT STARTED)
+- **Last completed layer:** Layer 1a — Docs ingestion & chunking (gate passed 2026-07-05)
+- **Build order & gates:** see `PROJECT_PLAN.md` §4. (Layer 1 split into 1a docs / 1b GitHub — see D-016.)
+- **Env:** Windows 11 / Windows PowerShell 5.1; Python 3.13.3; `.venv` at repo root. Run tasks with `./tasks.ps1 <setup|test|lint|format|ingest>`.
 - **Repo:** git initialized; remote `origin` = https://github.com/mahendra-kausik/docsGPT.git. Commits authored by user only (no Claude co-author).
+- **Corpus (1a):** 11,035 chunks / 751 files from MIT `langchain-ai/docs` @ sha 662d399 → `data/corpus/chunks.jsonl` (+ `manifest.json`). Rebuild: `./tasks.ps1 ingest`. Raw clone in `data/raw/` (git-ignored).
 
 ## Layer checklist
 - [x] Layer 0 — Repo scaffold & config
-- [ ] Layer 1 — Corpus ingestion & chunking
+- [x] Layer 1a — Docs ingestion & chunking
+- [ ] Layer 1b — GitHub Discussions/Issues ingestion (needs GITHUB_TOKEN; couples to Layer 3 gold set)
+- [ ] Layer 2 — Indexing & dense baseline retrieval
 - [ ] Layer 2 — Indexing & dense baseline retrieval
 - [ ] Layer 3 — Eval harness + gold set + baseline numbers  ← do not skip
 - [ ] Layer 4 — Hybrid retrieval + reranker (ablation table)
@@ -24,12 +27,12 @@
 - [ ] Layer 10 — Polish & defense
 
 ## Decisions log
-- Pre-seeded D-001…D-012 in `DECISIONS.md`. Layer 0 added D-013 (PowerShell task runner), D-014 (pyproject + pinned requirements), D-015 (lean layer-incremental deps + pydantic-settings config).
+- Pre-seeded D-001…D-012 in `DECISIONS.md`. Layer 0: D-013 (PowerShell task runner), D-014 (pyproject + pinned requirements), D-015 (lean deps + pydantic-settings). Layer 1a: D-016 (MIT docs-repo source, Python-focused scope; licensing verified), D-017 (hand-rolled fence-aware MDX cleaning + chunking).
 
 ## Open questions / blockers
 - ⚠️ Re-verify free-tier limits before relying on them (Gemini RPM/RPD in AI Studio; Groq per-model RPD; Qdrant inactivity windows; Cloud Run quotas/regions; Vercel Hobby; Langfuse cap). See `PROJECT_PLAN.md` §7.
-- **Layer 1 first task:** confirm final corpus + its docs licensing before scraping (LangChain/LangGraph docs + GitHub, per D-002); check each source's LICENSE/site terms.
-- ⚠️ At Layer 2: verify torch / sentence-transformers ship Python 3.13 Windows wheels before adding them.
+- **Layer 1b:** needs `GITHUB_TOKEN` (5k req/hr); pull Discussions ("marked as answer" → natural gold labels) + curated closed Issues; cache aggressively. Couples to the Layer 3 gold set.
+- ⚠️ At Layer 2: verify torch / sentence-transformers ship Python 3.13 Windows wheels before adding them. Also handle ~5 oversize base64-in-code chunks (truncate/scrub before embedding).
 
 ## How to resume
 1. Read this file, then `CLAUDE.md`, then the relevant section of `PROJECT_PLAN.md`.

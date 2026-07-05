@@ -24,6 +24,11 @@ venv/
 .cache/
 models/
 
+# --- Raw cloned corpus source (large, reproducible from the pinned SHA) ---
+data/raw/
+# NOTE: the chunked corpus (data/corpus/*.jsonl) and its manifest ARE committed
+# as the durable source of truth (DECISIONS D-004) — do not ignore them.
+
 # --- OS / editor ---
 .DS_Store
 Thumbs.db
