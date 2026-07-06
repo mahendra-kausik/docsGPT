@@ -39,11 +39,13 @@ switch ($task) {
     "search" { Assert-Venv; & $py -m src.retrieval.search @args }
     "propose"      { Assert-Venv; & $py -m src.eval.propose @args }
     "prefill"      { Assert-Venv; & $py -m src.eval.prefill @args }
+    "synth"        { Assert-Venv; & $py -m src.eval.synth @args }
     "compile-gold" { Assert-Venv; & $py -m src.eval.compile_gold @args }
+    "build-gold"   { Assert-Venv; & $py -m src.eval.build_gold @args }
     "eval"         { Assert-Venv; & $py -m src.eval.run_eval @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | compile-gold | eval | help" }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | synth | compile-gold | build-gold | eval | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | compile-gold | eval | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | synth | compile-gold | build-gold | eval | help"
         exit 1
     }
 }

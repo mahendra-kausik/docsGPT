@@ -115,12 +115,23 @@ class Settings(BaseSettings):
     min_chunk_chars: int = 24
     corpus_jsonl: str = "data/corpus/chunks.jsonl"
     results_dir: str = "results"
+    # --- LLM gateway (Layer 3+, D-008): single wrapper, backoff + on-disk cache ---
+    llm_cache_dir: str = ".cache/llm"
+    llm_max_retries: int = 6
+    llm_timeout_s: float = 60.0
+    llm_seed: int = 13  # Groq seed for as-deterministic-as-possible generation
     # --- Eval / gold set (Layer 3, D-024) ---
     eval_candidate_pool: int = 20              # dense candidates shown per Q during gold review
     eval_snippet_chars: int = 240              # candidate-chunk preview length in review.md
     gold_candidates_jsonl: str = "data/gold/candidates.jsonl"  # machine rank->chunk_id map
     gold_review_md: str = "data/gold/review.md"                # human-edited decision file
-    gold_jsonl: str = "data/gold/gold.jsonl"                   # compiled verified gold set
+    gold_forum_jsonl: str = "data/gold/gold_forum.jsonl"       # compiled forum (real) slice
+    gold_jsonl: str = "data/gold/gold.jsonl"                   # final merged gold set (committed)
+    # --- Synthetic gold generation (Layer 3, D-025): Groq-8B questions from docs chunks ---
+    gold_synth_jsonl: str = "data/gold/gold_synth.jsonl"       # generated gold (source=synthetic)
+    synth_min_chunk_chars: int = 300      # skip thin chunks; generate from substantive ones
+    synth_multi_group_size: int = 3       # chunks combined for a multi-hop question
+    synth_seed: int = 7                   # seeds chunk sampling for reproducible selection
     corpus: CorpusConfig = CorpusConfig()
     forum: ForumConfig = ForumConfig()
 

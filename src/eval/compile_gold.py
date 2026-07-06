@@ -128,7 +128,7 @@ def main() -> None:
         "--candidates", default=None, help="candidates.jsonl path (default from config)"
     )
     ap.add_argument("--review", default=None, help="review.md path (default from config)")
-    ap.add_argument("--out", default=None, help="output gold.jsonl path (default from config)")
+    ap.add_argument("--out", default=None, help="output forum-gold path (default from config)")
     args = ap.parse_args()
     s = get_settings()
 
@@ -138,7 +138,7 @@ def main() -> None:
 
     items, counts = compile_gold(proposals, decisions)
 
-    out_path = _abs(args.out or s.gold_jsonl)
+    out_path = _abs(args.out or s.gold_forum_jsonl)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with out_path.open("w", encoding="utf-8") as fh:
         for item in items:

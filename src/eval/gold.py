@@ -47,10 +47,12 @@ class ForumSeed(BaseModel):
 class GoldItem(BaseModel):
     """A verified (or explicitly unanswerable) question -> gold-chunk mapping."""
 
-    qid: int  # forum topic id (stable, traces back to the seed)
-    question: str  # the user's real question (from the seed)
+    qid: int  # stable id: forum topic id, or 1_000_000+ for synthetic items
+    question: str  # the question (real forum question, or generated)
     gold_chunk_ids: list[str] = []  # docs chunk ids that answer it (empty if unanswerable)
     status: str = VERIFIED
+    source: str = "forum"  # provenance: "forum" (real) | "synthetic" (D-025)
+    hop: str = ""  # "single" | "multi" for synthetic items (else "")
     source_url: str = ""  # forum topic URL, for provenance/attribution
     tags: list[str] = []
 

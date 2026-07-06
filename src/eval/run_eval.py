@@ -84,6 +84,20 @@ def run_dense_eval(gold_path: str | None = None, top_k: int | None = None) -> di
         )
 
     agg = M.aggregate(per_query)
+
+    # Per-source breakdown: real (forum) is the honest headline, synthetic is
+    # augmentation and tends to score higher (questions share vocab with their gold
+    # chunk) — reporting them apart makes that gap visible rather than hidden (D-025).
+    by_source: dict[str, dict[str, float]] = {}
+    sources = sorted({it.source for it in scored})
+    if len(sources) > 1:
+        for src in sources:
+            idx = [i for i, it in enumerate(scored) if it.source == src]
+            by_source[src] = {
+                "n": len(idx),
+                **M.aggregate([per_query[i] for i in idx]),
+            }
+
     latencies_sorted = sorted(latencies)
 
     def _pct(p: float) -> float:
@@ -113,6 +127,10 @@ def run_dense_eval(gold_path: str | None = None, top_k: int | None = None) -> di
             "total_items": len(items),
         },
         "metrics": {name: round(val, 4) for name, val in agg.items()},
+        "metrics_by_source": {
+            src: {k: (v if k == "n" else round(v, 4)) for k, v in d.items()}
+            for src, d in by_source.items()
+        },
         "latency_ms": {
             "p50": _pct(0.50),
             "p95": _pct(0.95),
@@ -141,10 +159,15 @@ def main() -> None:
         f"\nDense-only baseline  ({g['scored_items']} scored / "
         f"{g['unanswerable_dropped']} unanswerable / {g['total_items']} total)"
     )
-    for name in ("recall@1", "recall@5", "recall@10", "mrr@3", "ndcg@10", "hit@5"):
+    headline = ("recall@1", "recall@5", "recall@10", "mrr@3", "ndcg@10", "hit@5")
+    for name in headline:
         if name in m:
             print(f"  {name:<10} {m[name]:.4f}")
     print(f"  latency p50/p95 {results['latency_ms']['p50']}/{results['latency_ms']['p95']} ms")
+
+    for src, d in results["metrics_by_source"].items():
+        cols = "  ".join(f"{name}={d[name]:.3f}" for name in ("recall@5", "mrr@3") if name in d)
+        print(f"  [{src:<9} n={int(d['n']):>3}]  {cols}")
 
     if not args.no_save:
         results_dir = _abs(s.results_dir)

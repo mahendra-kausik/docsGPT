@@ -8,10 +8,13 @@ known values. The live dense-search path is exercised by the Layer 3 eval run.
 import math
 
 from src.eval import metrics as M
+from src.eval.build_gold import build
 from src.eval.compile_gold import compile_gold, parse_decisions, resolve_gold_ids
-from src.eval.gold import UNANSWERABLE, VERIFIED, ForumSeed, GoldItem, html_to_text
+from src.eval.gold import UNANSWERABLE, VERIFIED, ForumSeed, GoldItem, html_to_text, save_gold
 from src.eval.prefill import answer_link_matches, apply_prefill, normalize_docs_url
 from src.eval.propose import Candidate, Proposal
+from src.eval.synth import _clean_question
+from src.llm.gateway import _strip_provider
 
 RANKED = ["a", "b", "c", "d", "e"]  # retriever output, best-first
 
@@ -150,17 +153,23 @@ def test_answer_link_matches_one_best_chunk_per_linked_page(monkeypatch):
     )
 
     def _c(rank, cid, path):
-        return Candidate(rank=rank, chunk_id=cid, score=1.0 / rank, heading_path="H",
-                         source_url=f"{base}/{path}", snippet="s")
+        return Candidate(
+            rank=rank,
+            chunk_id=cid,
+            score=1.0 / rank,
+            heading_path="H",
+            source_url=f"{base}/{path}",
+            snippet="s",
+        )
 
     prop = Proposal(
         qid=10,
         question="how?",
         source_url="u",
         candidates=[
-            _c(1, "a", "langchain/models"),          # unrelated page
-            _c(2, "b", "langgraph/persistence"),     # best chunk of the linked page
-            _c(5, "c", "langgraph/persistence"),     # another chunk of the same page
+            _c(1, "a", "langchain/models"),  # unrelated page
+            _c(2, "b", "langgraph/persistence"),  # best chunk of the linked page
+            _c(5, "c", "langgraph/persistence"),  # another chunk of the same page
         ],
     )
     # only the best chunk (rank 2) of the linked page — not rank 5 too, not the unrelated rank 1
@@ -180,3 +189,40 @@ def test_apply_prefill_fills_blank_and_is_idempotent():
     # re-running does not double-fill or duplicate the annotation
     out2, filled2 = apply_prefill(out, {10: [2], 11: [1]})
     assert filled2 == 0 and out2.count("auto-suggested") == 1
+
+
+# --- D-025: synthetic generation + merge ---
+
+
+def test_strip_provider():
+    assert _strip_provider("groq/llama-3.1-8b-instant") == "llama-3.1-8b-instant"
+    assert _strip_provider("llama-3.1-8b-instant") == "llama-3.1-8b-instant"
+
+
+def test_clean_question_accepts_good_and_rejects_bad():
+    assert _clean_question('{"question": "How do I stream tokens from a chat model?"}') == (
+        "How do I stream tokens from a chat model?"
+    )
+    # rejects: not a question, too short, meta-leak, malformed JSON
+    assert _clean_question('{"question": "This is a statement."}') is None
+    assert _clean_question('{"question": "Why?"}') is None
+    assert _clean_question('{"question": "What does the passage say about tools?"}') is None
+    assert _clean_question("not json") is None
+
+
+def test_build_merges_scored_items_by_source(tmp_path):
+    forum = [GoldItem(qid=1, question="q", gold_chunk_ids=["a"], source="forum")]
+    synth = [
+        GoldItem(
+            qid=1_000_000, question="q", gold_chunk_ids=["b"], source="synthetic", hop="single"
+        ),
+        # empty-gold synthetic item is not scored -> excluded from the merge:
+        GoldItem(qid=1_000_001, question="q", gold_chunk_ids=[], source="synthetic", hop="multi"),
+    ]
+    fp, sp = tmp_path / "forum.jsonl", tmp_path / "synth.jsonl"
+    save_gold(forum, str(fp))
+    save_gold(synth, str(sp))
+    items, report = build(str(fp), str(sp))
+    assert report["total"] == 2
+    assert report["by_source"] == {"forum": 1, "synthetic": 1}
+    assert report["by_hop"] == {"single": 1}
