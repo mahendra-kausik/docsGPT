@@ -115,6 +115,12 @@ class Settings(BaseSettings):
     min_chunk_chars: int = 24
     corpus_jsonl: str = "data/corpus/chunks.jsonl"
     results_dir: str = "results"
+    # --- Eval / gold set (Layer 3, D-024) ---
+    eval_candidate_pool: int = 20              # dense candidates shown per Q during gold review
+    eval_snippet_chars: int = 240              # candidate-chunk preview length in review.md
+    gold_candidates_jsonl: str = "data/gold/candidates.jsonl"  # machine rank->chunk_id map
+    gold_review_md: str = "data/gold/review.md"                # human-edited decision file
+    gold_jsonl: str = "data/gold/gold.jsonl"                   # compiled verified gold set
     corpus: CorpusConfig = CorpusConfig()
     forum: ForumConfig = ForumConfig()
 

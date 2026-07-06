@@ -37,9 +37,13 @@ switch ($task) {
     "ingest-forum" { Assert-Venv; & $py -m src.ingest.forum @args }
     "index"  { Assert-Venv; & $py -m src.retrieval.index @args }
     "search" { Assert-Venv; & $py -m src.retrieval.search @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | search | help" }
+    "propose"      { Assert-Venv; & $py -m src.eval.propose @args }
+    "prefill"      { Assert-Venv; & $py -m src.eval.prefill @args }
+    "compile-gold" { Assert-Venv; & $py -m src.eval.compile_gold @args }
+    "eval"         { Assert-Venv; & $py -m src.eval.run_eval @args }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | compile-gold | eval | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | search | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | compile-gold | eval | help"
         exit 1
     }
 }

@@ -29,6 +29,11 @@ data/raw/
 # NOTE: the chunked corpus (data/corpus/*.jsonl) and its manifest ARE committed
 # as the durable source of truth (DECISIONS D-004) — do not ignore them.
 
+# --- Gold-set review intermediates (Layer 3, D-024): large + regenerable via ./tasks.ps1 propose.
+# The compiled data/gold/gold.jsonl is the durable committed artifact (like forum_seeds.jsonl).
+data/gold/candidates.jsonl
+data/gold/review.md
+
 # --- OS / editor ---
 .DS_Store
 Thumbs.db

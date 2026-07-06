@@ -4,8 +4,12 @@
 > Keep it short. This is how a new session resumes cleanly without re-reading everything.
 
 ## Current status
-- **Active layer:** Layer 3 — Eval harness + gold set + baseline numbers (NOT STARTED)
+- **Active layer:** Layer 3 — Eval harness + gold set + baseline numbers (IN PROGRESS — Phase A tooling built; **awaiting user gold review**)
 - **Last completed layer:** Layer 2 — Indexing & dense baseline retrieval (gate passed 2026-07-06)
+- **Layer 3 Phase A (built, D-024):** eval harness under `src/eval/` — `metrics.py` (Recall@k/Hit@k/nDCG@k @1,5,10 + MRR@3, pure/LLM-free, unit-tested), `gold.py` (GoldItem + forum accepted-answer extraction), `propose.py` (+`--from-candidates` offline re-render), `prefill.py`, `compile_gold.py`, `run_eval.py`. Tasks: `./tasks.ps1 propose | prefill | compile-gold | eval`. **33 tests green; ruff clean.** Fixed a Windows cp1252 console crash (non-ASCII in prints). Pipeline smoke-tested end-to-end (compile→eval ran clean).
+  - **Generated** `data/gold/review.md` (163 Qs, each w/ accepted forum answer + 20 dense candidates) + `data/gold/candidates.jsonl` (both git-ignored, regenerable).
+  - **Pre-filled 26/163** DECISION lines via `prefill` (answer-link URL match, best chunk per linked page; annotated for spot-check). **137 still blank — need manual mapping.**
+  - **NEXT (user):** verify the 26 auto-suggested + map the 137 blank DECISION lines in `review.md` → `./tasks.ps1 compile-gold` (writes durable `data/gold/gold.jsonl`) → `./tasks.ps1 eval` (saves dense baseline to `results/eval_dense_*.json` = Layer 3 gate). Preliminary eval on the 26 auto-labeled only: recall@1 .27 / @5 .58 / @10 .85, mrr@3 .40 (biased subset, NOT the baseline). Groq/RAGAS = Phase B.
 - **Build order & gates:** see `PROJECT_PLAN.md` §4. (Layer 1 split into 1a docs / 1b labels — see D-016; label source pivoted to the Forum — see D-018/D-019.)
 - **Env:** Windows 11 / Windows PowerShell 5.1; Python 3.13.3; `.venv` at repo root. Run tasks with `./tasks.ps1 <setup|test|lint|format|ingest|ingest-forum>`.
 - **Repo:** git initialized; remote `origin` = https://github.com/mahendra-kausik/docsGPT.git. Commits authored by user only (no Claude co-author).
@@ -29,7 +33,7 @@
 - [ ] Layer 10 — Polish & defense
 
 ## Decisions log
-- Pre-seeded D-001…D-012 in `DECISIONS.md`. Layer 0: D-013 (PowerShell task runner), D-014 (pyproject + pinned requirements), D-015 (lean deps + pydantic-settings). Layer 1a: D-016 (MIT docs-repo source, Python-focused scope; licensing verified), D-017 (hand-rolled fence-aware MDX cleaning + chunking). Layer 1b: D-018 (labels from LangChain Forum, not GitHub Discussions — migrated), D-019 (forum data = gold-eval seeds only, not corpus; leakage + licensing). Layer 2 prep: D-020 (free-tier limits re-verified 2026-07-06; `gemini-2.0-flash` retired → `gemini-2.5-flash`; Groq TPD now binding). Layer 2: D-021 (Qdrant cosine/normalized, model-derived dim, full payload, uuid5 point ids, bge query instruction), D-022 (base64/data-URI scrub before embed), D-023 (torch CPU build; CPU wheel index at Layer 8).
+- Pre-seeded D-001…D-012 in `DECISIONS.md`. Layer 0: D-013 (PowerShell task runner), D-014 (pyproject + pinned requirements), D-015 (lean deps + pydantic-settings). Layer 1a: D-016 (MIT docs-repo source, Python-focused scope; licensing verified), D-017 (hand-rolled fence-aware MDX cleaning + chunking). Layer 1b: D-018 (labels from LangChain Forum, not GitHub Discussions — migrated), D-019 (forum data = gold-eval seeds only, not corpus; leakage + licensing). Layer 2 prep: D-020 (free-tier limits re-verified 2026-07-06; `gemini-2.0-flash` retired → `gemini-2.5-flash`; Groq TPD now binding). Layer 2: D-021 (Qdrant cosine/normalized, model-derived dim, full payload, uuid5 point ids, bge query instruction), D-022 (base64/data-URI scrub before embed), D-023 (torch CPU build; CPU wheel index at Layer 8). Layer 3: D-024 (gold build = batch propose→review.md→compile; drop docs-unanswerable Qs; pure LLM-free retrieval metrics).
 
 ## Open questions / blockers
 - ✅ Free-tier limits re-verified 2026-07-06 (D-020): Qdrant, Cloud Run, Groq, Gemini done. **Still to verify at their layers:** Vercel Hobby + Langfuse cap (§7).
