@@ -8,6 +8,14 @@ pydantic-settings==2.5.2
 pyyaml==6.0.2
 python-dotenv==1.0.1
 
+# --- Retrieval / indexing (Layer 2: dense baseline) ---
+# Wheels verified for Python 3.13 / Windows (D-020): torch ships cp313 win_amd64;
+# sentence-transformers, transformers, qdrant-client are pure-python.
+# torch here is the CPU build (Windows PyPI default; matches Cloud Run CPU — D-023).
+torch==2.12.1
+sentence-transformers==5.6.0
+qdrant-client==1.18.0
+
 # --- Dev / tooling ---
 pytest==8.3.3
 ruff==0.6.9

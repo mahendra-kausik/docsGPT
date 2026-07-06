@@ -35,9 +35,11 @@ switch ($task) {
     "format" { Assert-Venv; & $py -m ruff format . }
     "ingest" { Assert-Venv; & $py -m src.ingest.corpus @args }
     "ingest-forum" { Assert-Venv; & $py -m src.ingest.forum @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | help" }
+    "index"  { Assert-Venv; & $py -m src.retrieval.index @args }
+    "search" { Assert-Venv; & $py -m src.retrieval.search @args }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | search | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | search | help"
         exit 1
     }
 }

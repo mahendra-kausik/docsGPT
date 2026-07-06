@@ -103,6 +103,13 @@ class Settings(BaseSettings):
     rrf_k: int = 60
     retrieve_top_k: int = 50
     rerank_top_n: int = 6
+    # --- Indexing (Layer 2: dense baseline, D-021/D-022) ---
+    qdrant_collection: str = "docs_dense"
+    vector_distance: str = "Cosine"
+    embed_batch_size: int = 64
+    upsert_batch_size: int = 256
+    embed_max_chars: int = 8000
+    query_instruction: str = "Represent this sentence for searching relevant passages:"
     chunk_size: int = 1000
     chunk_overlap: int = 150
     min_chunk_chars: int = 24

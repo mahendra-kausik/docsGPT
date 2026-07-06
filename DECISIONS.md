@@ -189,3 +189,32 @@
 - **Alternatives considered:** Keep the older hard-coded numbers (violates §4 "don't hard-code, verify live"); all-Groq synthesis (retained as fallback per D-008).
 - **Tradeoffs / risks:** Groq TPD could throttle large eval runs → mitigate with the mandated response cache + backoff and by capping RAGAS sample size. Gemini free tier may train on inputs (public docs only — acceptable). **Not yet re-verified:** Vercel Hobby and Langfuse caps — deferred to their layers (7/8).
 - **Supersedes:** the model-id portion of **D-008** (`gemini-2.0-flash` → current Flash); the routing strategy in D-008 is unchanged.
+
+## D-021 — Dense index spec: Qdrant cosine, normalized bge, model-derived dim, full payload, deterministic UUID ids
+- **Date / Layer:** Layer 2 (2026-07-06).
+- **Context:** Layer 2 needs the chunked corpus embedded and pushed to the deployed Qdrant cluster with a query-time search fn. Several small but questionable choices: distance metric, where the embedding dim comes from, what to store per point, and how to map our string chunk ids to Qdrant point ids.
+- **Decision:**
+  - **Cosine distance + L2-normalized embeddings** (`normalize_embeddings=True`). bge vectors are trained for cosine similarity.
+  - **Embedding dimension is read from the model** (`get_embedding_dimension`), not hard-coded — so the bge-small(384)↔bge-base(768) ablation (D-005) needs no index-code change and index/query dims can never silently disagree.
+  - **Store the full `Chunk` payload** (text + `source_url`/`heading_path`/provenance) on each point. 11k×~600 chars ≈ 7 MB vs the 4 GB free disk — trivial — and it removes the need for a second document store when reranking (Layer 4) and citing (Layer 5).
+  - **Point ids = `uuid5(namespace, chunk.id)`** (deterministic). Qdrant requires uint64/UUID ids; our chunk ids are short hex hashes. uuid5 keeps upserts idempotent across re-indexes regardless of the chunk-id format.
+  - **bge query instruction** (`Represent this sentence for searching relevant passages:`) is prepended to **queries only**, per documented bge-en-v1.5 usage; config-controlled (`query_instruction`, empty disables) so it travels with the model choice.
+- **Why:** Each choice is the model-intended / least-surprising option and keeps future ablations to one-line config edits (CLAUDE.md §6). Storing the payload trades a little Qdrant disk (abundant) for a much simpler retrieval/citation path.
+- **Alternatives considered:** Dot-product without normalization (equivalent once normalized, but normalize makes scores comparable and is bge's documented setup); id-only payload + separate doc store (extra moving part for no benefit at this scale); `int(chunk.id, 16)` point ids (works only if ids stay 16-hex — brittle); dropping the query instruction (measurably lower Recall on bge-en-v1.5).
+- **Tradeoffs / risks:** Payload duplicates the corpus text in Qdrant — fine at this scale, and the JSONL remains the durable source of truth (D-004). If we later switch to a non-bge model, revisit the query instruction.
+
+## D-022 — Embedding input hygiene: scrub base64/data-URI runs, then hard char-cap
+- **Date / Layer:** Layer 2 (2026-07-06).
+- **Context:** Layer-1a profiling (recorded in PROGRESS) found 2 chunks ~52k chars dominated by a single ~52k base64 run, plus ~3 more with 600–1,100-char base64 runs — the D-017 "base64 inside doc code examples" tail. Fed raw, these consume bge's entire 512-token budget on noise.
+- **Decision:** Before encoding, `scrub_binary()` replaces `data:…;base64,…` URIs and any `[A-Za-z0-9+/]{200,}` run with `"[binary omitted]"`, then `prepare_text()` caps length at `embed_max_chars` (8000). Applied to both passages and queries.
+- **Why:** Removes semantically empty bytes so the model embeds the real surrounding text; the 200-char threshold is well above normal code tokens/hashes (sha256 = 64) but far below the real base64 blobs, so ordinary code/prose is untouched (unit-tested).
+- **Alternatives considered:** Drop the offending chunks entirely (loses the real code around the blob); rely only on tokenizer truncation (would keep the first 512 tokens of pure base64 → a garbage vector); scrub during ingestion/Layer-1a (violates D-017's "never mutate code" rule — better to scrub at embed time, leaving the JSONL faithful).
+- **Tradeoffs / risks:** A pathological 200+ char run of legitimate base64-charset text (rare in prose/code — they contain spaces/punctuation) would be scrubbed; acceptable given the retrieval benefit.
+
+## D-023 — torch CPU build (Windows local now; CPU wheel index for the Cloud Run image later)
+- **Date / Layer:** Layer 2 (2026-07-06).
+- **Context:** bge embedding + the Layer-4 reranker run on CPU (free tier, no GPU on Cloud Run). torch is the heavy dep.
+- **Decision:** Pin `torch==2.12.1`; on Windows the PyPI wheel is already the CPU build (installed as `2.12.1+cpu`). At Layer 8 the Linux container must install torch from `https://download.pytorch.org/whl/cpu` to avoid the bundled-CUDA Linux wheel (~GBs) that we'd never use.
+- **Why:** Keeps local dev and the eventual container CPU-only and lean, matching the free-tier deployment target (D-012).
+- **Alternatives considered:** GPU torch (no free GPU; pointless); a heavier all-in-one image (slow cold starts on Cloud Run, D-012 risk).
+- **Tradeoffs / risks:** Must remember the CPU index-url in the Layer 8 Dockerfile or the image balloons; flagged here so it isn't forgotten.
