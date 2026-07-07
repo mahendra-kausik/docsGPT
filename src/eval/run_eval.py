@@ -22,9 +22,15 @@ from pathlib import Path
 from src.config import PROJECT_ROOT, get_settings
 from src.eval import metrics as M
 from src.eval.gold import load_gold
-from src.retrieval.search import DenseRetriever
+from src.retrieval.search import DenseRetriever, HybridRetriever
 
 logger = logging.getLogger(__name__)
+
+# Pipeline id -> (retriever class, results-file label recorded in the run metadata).
+_PIPELINES = {
+    "dense": (DenseRetriever, "dense-only"),
+    "hybrid": (HybridRetriever, "hybrid-rrf"),
+}
 
 
 def _abs(path: str) -> Path:
@@ -47,8 +53,18 @@ def _git_sha() -> str:
         return "unknown"
 
 
-def run_dense_eval(gold_path: str | None = None, top_k: int | None = None) -> dict:
-    """Score the dense retriever over the gold set and return a results dict."""
+def run_eval(
+    pipeline: str = "dense", gold_path: str | None = None, top_k: int | None = None
+) -> dict:
+    """Score a retrieval pipeline over the gold set and return a results dict.
+
+    pipeline: "dense" (Layer 2 baseline) or "hybrid" (Layer 4a dense+BM25 RRF). Both
+    run the identical gold set + metrics so the results files form a clean ablation.
+    """
+    if pipeline not in _PIPELINES:
+        raise SystemExit(f"Unknown pipeline {pipeline!r}. Choose: {', '.join(_PIPELINES)}")
+    retriever_cls, pipeline_label = _PIPELINES[pipeline]
+
     s = get_settings()
     gold_file = gold_path or s.gold_jsonl
     items = load_gold(gold_file)
@@ -63,7 +79,7 @@ def run_dense_eval(gold_path: str | None = None, top_k: int | None = None) -> di
 
     # Retrieve deep enough to cover the largest reported cutoff.
     k = top_k or max((*M.DEFAULT_KS, M.MRR_K))
-    retriever = DenseRetriever()
+    retriever = retriever_cls()
 
     per_query: list[dict[str, float]] = []
     per_query_detail: list[dict] = []
@@ -104,22 +120,28 @@ def run_dense_eval(gold_path: str | None = None, top_k: int | None = None) -> di
         idx = min(len(latencies_sorted) - 1, int(round(p * (len(latencies_sorted) - 1))))
         return round(latencies_sorted[idx], 1)
 
+    is_hybrid = pipeline == "hybrid"
+    config = {
+        "embedding_model": s.embedding_model,
+        "query_instruction": s.query_instruction,
+        "qdrant_collection": s.qdrant_hybrid_collection if is_hybrid else s.qdrant_collection,
+        "vector_distance": s.vector_distance,
+        "retrieve_top_k": k,
+        "ks": list(M.DEFAULT_KS),
+        "mrr_k": M.MRR_K,
+    }
+    if is_hybrid:  # record the sparse half + the RRF constant that produced these numbers
+        config["sparse_model"] = s.sparse_model
+        config["rrf_k"] = s.rrf_k
+
     return {
         "run": {
             "timestamp_utc": datetime.now(UTC).isoformat(),
             "git_sha": _git_sha(),
-            "pipeline": "dense-only",  # Layer 3 baseline; Layer 4 adds hybrid/rerank
+            "pipeline": pipeline_label,  # dense-only (Layer 3) or hybrid-rrf (Layer 4a)
             "judge_model": None,  # retrieval metrics need no LLM judge (PLAN §6)
         },
-        "config": {
-            "embedding_model": s.embedding_model,
-            "query_instruction": s.query_instruction,
-            "qdrant_collection": s.qdrant_collection,
-            "vector_distance": s.vector_distance,
-            "retrieve_top_k": k,
-            "ks": list(M.DEFAULT_KS),
-            "mrr_k": M.MRR_K,
-        },
+        "config": config,
         "gold": {
             "file": gold_file,
             "scored_items": len(scored),
@@ -141,7 +163,11 @@ def run_dense_eval(gold_path: str | None = None, top_k: int | None = None) -> di
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Dense-only baseline eval over the gold set.")
+    ap = argparse.ArgumentParser(description="Retrieval eval over the gold set (dense or hybrid).")
+    ap.add_argument(
+        "--pipeline", choices=list(_PIPELINES), default="dense",
+        help="retrieval pipeline: dense (Layer 2 baseline) or hybrid (Layer 4a)",
+    )
     ap.add_argument("--gold", default=None, help="gold.jsonl path (default from config)")
     ap.add_argument(
         "--top-k", type=int, default=None, help="retrieval depth (default = max cutoff)"
@@ -150,13 +176,13 @@ def main() -> None:
     args = ap.parse_args()
     s = get_settings()
 
-    results = run_dense_eval(args.gold, args.top_k)
+    results = run_eval(args.pipeline, args.gold, args.top_k)
 
     # Headline summary to stdout.
     m = results["metrics"]
     g = results["gold"]
     print(
-        f"\nDense-only baseline  ({g['scored_items']} scored / "
+        f"\n{results['run']['pipeline']}  ({g['scored_items']} scored / "
         f"{g['unanswerable_dropped']} unanswerable / {g['total_items']} total)"
     )
     headline = ("recall@1", "recall@5", "recall@10", "mrr@3", "ndcg@10", "hit@5")
@@ -173,7 +199,7 @@ def main() -> None:
         results_dir = _abs(s.results_dir)
         results_dir.mkdir(parents=True, exist_ok=True)
         stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
-        out_path = results_dir / f"eval_dense_{stamp}.json"
+        out_path = results_dir / f"eval_{args.pipeline}_{stamp}.json"
         out_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
         print(f"\nSaved: {out_path}")
 

@@ -13,11 +13,13 @@ from __future__ import annotations
 import argparse
 import logging
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from src.config import get_settings
 from src.retrieval.embedder import Embedder
+from src.retrieval.fusion import rrf_fuse
 from src.retrieval.index import get_client
+from src.retrieval.sparse import SparseEmbedder
 
 logger = logging.getLogger(__name__)
 
@@ -73,14 +75,60 @@ class DenseRetriever:
         return hits, elapsed_ms
 
 
+class HybridRetriever:
+    """Dense + BM25 sparse retrieval fused with client-side RRF (Layer 4a, D-026/D-027).
+
+    Two named-vector queries against docs_hybrid (dense cosine + sparse BM25) are fused
+    with rrf_fuse (k from config, tunable) rather than Qdrant's server-side FusionQuery,
+    so k is honoured and sweepable. Returns the same Hit shape as DenseRetriever so the
+    eval harness and agent are retriever-agnostic; hit.score becomes the RRF score.
+    """
+
+    def __init__(self) -> None:
+        self.s = get_settings()
+        self.embedder = Embedder()
+        self.sparse = SparseEmbedder()
+        self.client = get_client()
+
+    def search(self, query: str, top_k: int | None = None) -> tuple[list[Hit], float]:
+        """Return (hits, latency_ms) for a hybrid RRF-fused top-k search."""
+        top_k = top_k or self.s.retrieve_top_k
+        coll = self.s.qdrant_hybrid_collection
+        t0 = time.perf_counter()
+        qvec = self.embedder.encode_query(query)
+        qsparse = self.sparse.encode_query(query)
+        dense_resp = self.client.query_points(
+            collection_name=coll, query=qvec, using="dense", limit=top_k, with_payload=True
+        )
+        sparse_resp = self.client.query_points(
+            collection_name=coll, query=qsparse, using="sparse", limit=top_k, with_payload=True
+        )
+        # Fuse on chunk id (payload id) — the space the gold set is scored in.
+        dense_hits = [_to_hit(p) for p in dense_resp.points]
+        sparse_hits = [_to_hit(p) for p in sparse_resp.points]
+        by_id = {h.id: h for h in (*dense_hits, *sparse_hits)}
+        fused = rrf_fuse(
+            [[h.id for h in dense_hits], [h.id for h in sparse_hits]], k=self.s.rrf_k
+        )
+        hits = [replace(by_id[cid], score=score) for cid, score in fused[:top_k]]
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        logger.info(
+            "hybrid_search q=%r k=%d dense=%d sparse=%d -> %d fused in %.1f ms",
+            query[:60], top_k, len(dense_hits), len(sparse_hits), len(hits), elapsed_ms,
+        )
+        return hits, elapsed_ms
+
+
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Dense search over the deployed Qdrant corpus.")
+    ap = argparse.ArgumentParser(description="Search over the deployed Qdrant corpus.")
     ap.add_argument("query", nargs="+", help="the search query")
     ap.add_argument("-k", "--top-k", type=int, default=5, help="how many hits to show")
+    ap.add_argument("--hybrid", action="store_true", help="use hybrid (dense+BM25 RRF) retrieval")
     args = ap.parse_args()
 
     query = " ".join(args.query)
-    hits, elapsed_ms = DenseRetriever().search(query, top_k=args.top_k)
+    retriever = HybridRetriever() if args.hybrid else DenseRetriever()
+    hits, elapsed_ms = retriever.search(query, top_k=args.top_k)
     print(f'\nQuery: {query!r}')
     print(f"Returned {len(hits)} hits in {elapsed_ms:.1f} ms\n")
     for i, h in enumerate(hits, 1):

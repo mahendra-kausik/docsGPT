@@ -36,6 +36,7 @@ switch ($task) {
     "ingest" { Assert-Venv; & $py -m src.ingest.corpus @args }
     "ingest-forum" { Assert-Venv; & $py -m src.ingest.forum @args }
     "index"  { Assert-Venv; & $py -m src.retrieval.index @args }
+    "index-hybrid" { Assert-Venv; & $py -m src.retrieval.hybrid_index @args }
     "search" { Assert-Venv; & $py -m src.retrieval.search @args }
     "propose"      { Assert-Venv; & $py -m src.eval.propose @args }
     "prefill"      { Assert-Venv; & $py -m src.eval.prefill @args }
@@ -43,9 +44,9 @@ switch ($task) {
     "compile-gold" { Assert-Venv; & $py -m src.eval.compile_gold @args }
     "build-gold"   { Assert-Venv; & $py -m src.eval.build_gold @args }
     "eval"         { Assert-Venv; & $py -m src.eval.run_eval @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | synth | compile-gold | build-gold | eval | help" }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | search | propose | prefill | synth | compile-gold | build-gold | eval | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | help"
         exit 1
     }
 }

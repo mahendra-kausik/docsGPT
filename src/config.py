@@ -100,11 +100,13 @@ class Settings(BaseSettings):
     reranker_model: str = "BAAI/bge-reranker-base"
     synthesis_model: str = "gemini-flash"
     cheap_model: str = "groq/llama-3.1-8b-instant"
-    rrf_k: int = 60
+    sparse_model: str = "Qdrant/bm25"  # fastembed BM25 for hybrid (Layer 4a, D-026)
+    rrf_k: int = 60                     # client-side RRF constant, tunable (D-027)
     retrieve_top_k: int = 50
     rerank_top_n: int = 6
     # --- Indexing (Layer 2: dense baseline, D-021/D-022) ---
     qdrant_collection: str = "docs_dense"
+    qdrant_hybrid_collection: str = "docs_hybrid"  # dense+sparse named vectors (D-026)
     vector_distance: str = "Cosine"
     embed_batch_size: int = 64
     upsert_batch_size: int = 256

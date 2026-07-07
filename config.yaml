@@ -9,12 +9,14 @@ synthesis_model: gemini-flash             # final answer synthesis (verify exact
 cheap_model: groq/llama-3.1-8b-instant    # decompose/grade/rewrite + RAGAS judge (D-008)
 
 # --- Retrieval / fusion ---
-rrf_k: 60             # RRF constant: score(d) = sum 1/(k + rank_i(d))  (D-006)
+sparse_model: Qdrant/bm25   # fastembed BM25 sparse embeddings for hybrid (D-026)
+rrf_k: 60             # RRF constant: score(d) = sum 1/(k + rank_i(d)); tunable, client-side (D-027)
 retrieve_top_k: 50    # candidates fetched before reranking
 rerank_top_n: 6       # candidates kept after cross-encoder rerank (D-007)
 
 # --- Indexing (Layer 2: dense baseline into Qdrant Cloud, D-021/D-022) ---
-qdrant_collection: docs_dense   # collection name in the deployed cluster
+qdrant_collection: docs_dense       # dense-only collection (Layer 2 baseline)
+qdrant_hybrid_collection: docs_hybrid  # named dense+sparse vectors (Layer 4a, D-026)
 vector_distance: Cosine         # bge embeddings are compared with cosine; we L2-normalize
 embed_batch_size: 64            # chunks encoded per forward pass (CPU-friendly)
 upsert_batch_size: 256          # points per Qdrant upsert request

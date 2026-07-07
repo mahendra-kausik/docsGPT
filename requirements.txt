@@ -16,6 +16,12 @@ torch==2.12.1
 sentence-transformers==5.6.0
 qdrant-client==1.18.0
 
+# --- Hybrid retrieval (Layer 4a: BM25 sparse + client-side RRF, D-026/D-027) ---
+# fastembed provides Qdrant's battle-tested BM25 sparse embeddings ("Qdrant/bm25").
+# Pulls onnxruntime + pillow (unused by BM25 itself) -> heavier Cloud Run image,
+# handled at Layer 8 (CPU wheels, D-023). py3.13/Windows wheels verified (D-026).
+fastembed==0.8.0
+
 # --- LLM gateway (Layer 3 synthetic gold + Layer 5/6 agent + RAGAS judge) ---
 # Groq official SDK (OpenAI-compatible); routes cheap/high-volume calls to
 # llama-3.1-8b-instant on the free tier (D-008/D-020). Backoff + cache in src/llm.
