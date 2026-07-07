@@ -152,16 +152,58 @@ class RerankRetriever:
         return hits, elapsed_ms
 
 
+class DecomposedRetriever:
+    """Query decomposition + multi-query hybrid retrieval fused with RRF (Layer 5b-i).
+
+    Splits the question into 1-3 sub-queries (Groq, D-037), retrieves each over the
+    hybrid index, and fuses the per-sub-query result lists with RRF — the intended fix
+    for the real-slice weakness (D-031), where a single query misses one facet of a
+    multi-part question. A single sub-query degrades exactly to HybridRetriever. Same
+    Hit shape as the others so the eval harness stays retriever-agnostic.
+    """
+
+    def __init__(self, gateway=None) -> None:
+        self.s = get_settings()
+        self.hybrid = HybridRetriever()
+        self.gateway = gateway  # decomposition LLM; None -> Groq default
+
+    def search(self, query: str, top_k: int | None = None) -> tuple[list[Hit], float]:
+        """Return (hits, latency_ms) for decomposed multi-query RRF retrieval."""
+        from src.agent.decompose import decompose
+
+        top_k = top_k or self.s.retrieve_top_k
+        t0 = time.perf_counter()
+        subqueries = decompose(query, self.gateway)
+        ranked_lists: list[list[str]] = []
+        by_id: dict[str, Hit] = {}
+        for sq in subqueries:
+            hits, _ = self.hybrid.search(sq, top_k=top_k)
+            for h in hits:
+                by_id[h.id] = h
+            ranked_lists.append([h.id for h in hits])
+        fused = rrf_fuse(ranked_lists, k=self.s.rrf_k)
+        hits = [replace(by_id[cid], score=score) for cid, score in fused[:top_k]]
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        logger.info(
+            "decomposed_search q=%r -> %d subqueries -> %d fused in %.1f ms",
+            query[:60], len(subqueries), len(hits), elapsed_ms,
+        )
+        return hits, elapsed_ms
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Search over the deployed Qdrant corpus.")
     ap.add_argument("query", nargs="+", help="the search query")
     ap.add_argument("-k", "--top-k", type=int, default=5, help="how many hits to show")
     ap.add_argument("--hybrid", action="store_true", help="use hybrid (dense+BM25 RRF) retrieval")
     ap.add_argument("--rerank", action="store_true", help="hybrid + cross-encoder rerank")
+    ap.add_argument("--decomposed", action="store_true", help="query decomposition + multi-query")
     args = ap.parse_args()
 
     query = " ".join(args.query)
-    if args.rerank:
+    if args.decomposed:
+        retriever = DecomposedRetriever()
+    elif args.rerank:
         retriever = RerankRetriever()
     elif args.hybrid:
         retriever = HybridRetriever()

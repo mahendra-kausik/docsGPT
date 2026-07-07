@@ -22,7 +22,12 @@ from pathlib import Path
 from src.config import PROJECT_ROOT, get_settings
 from src.eval import metrics as M
 from src.eval.gold import load_gold
-from src.retrieval.search import DenseRetriever, HybridRetriever, RerankRetriever
+from src.retrieval.search import (
+    DecomposedRetriever,
+    DenseRetriever,
+    HybridRetriever,
+    RerankRetriever,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +36,7 @@ _PIPELINES = {
     "dense": (DenseRetriever, "dense-only"),
     "hybrid": (HybridRetriever, "hybrid-rrf"),
     "rerank": (RerankRetriever, "hybrid-rerank"),
+    "decomposed": (DecomposedRetriever, "hybrid-decomposed"),
 }
 
 
@@ -121,7 +127,7 @@ def run_eval(
         idx = min(len(latencies_sorted) - 1, int(round(p * (len(latencies_sorted) - 1))))
         return round(latencies_sorted[idx], 1)
 
-    uses_sparse = pipeline in ("hybrid", "rerank")
+    uses_sparse = pipeline in ("hybrid", "rerank", "decomposed")
     config = {
         "embedding_model": s.embedding_model,
         "query_instruction": s.query_instruction,
@@ -137,6 +143,8 @@ def run_eval(
     if pipeline == "rerank":  # record the reranker + the fused pool depth it rescored
         config["reranker_model"] = s.reranker_model
         config["rerank_pool"] = s.retrieve_top_k
+    if pipeline == "decomposed":  # record the decomposition model (D-037)
+        config["decompose_model"] = s.cheap_model
 
     return {
         "run": {

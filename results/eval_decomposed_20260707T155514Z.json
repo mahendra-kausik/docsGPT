@@ -1,0 +1,3921 @@
+{
+  "run": {
+    "timestamp_utc": "2026-07-07T15:55:14.934569+00:00",
+    "git_sha": "c45a354",
+    "pipeline": "hybrid-decomposed",
+    "judge_model": null
+  },
+  "config": {
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "query_instruction": "Represent this sentence for searching relevant passages:",
+    "qdrant_collection": "docs_hybrid",
+    "vector_distance": "Cosine",
+    "retrieve_top_k": 10,
+    "ks": [
+      1,
+      5,
+      10
+    ],
+    "mrr_k": 3,
+    "sparse_model": "Qdrant/bm25",
+    "rrf_k": 60,
+    "decompose_model": "groq/llama-3.1-8b-instant"
+  },
+  "gold": {
+    "file": "data/gold/gold.jsonl",
+    "scored_items": 126,
+    "unanswerable_dropped": 0,
+    "total_items": 126
+  },
+  "metrics": {
+    "recall@1": 0.3505,
+    "hit@1": 0.4683,
+    "ndcg@1": 0.4683,
+    "recall@5": 0.6151,
+    "hit@5": 0.7302,
+    "ndcg@5": 0.5358,
+    "recall@10": 0.7077,
+    "hit@10": 0.7937,
+    "ndcg@10": 0.5703,
+    "mrr@3": 0.5661
+  },
+  "metrics_by_source": {
+    "forum": {
+      "n": 26,
+      "recall@1": 0.1346,
+      "hit@1": 0.1538,
+      "ndcg@1": 0.1538,
+      "recall@5": 0.1731,
+      "hit@5": 0.2308,
+      "ndcg@5": 0.164,
+      "recall@10": 0.3269,
+      "hit@10": 0.3846,
+      "ndcg@10": 0.2111,
+      "mrr@3": 0.1731
+    },
+    "synthetic": {
+      "n": 100,
+      "recall@1": 0.4067,
+      "hit@1": 0.55,
+      "ndcg@1": 0.55,
+      "recall@5": 0.73,
+      "hit@5": 0.86,
+      "ndcg@5": 0.6325,
+      "recall@10": 0.8067,
+      "hit@10": 0.9,
+      "ndcg@10": 0.6637,
+      "mrr@3": 0.6683
+    }
+  },
+  "latency_ms": {
+    "p50": 2415.3,
+    "p95": 4065.5,
+    "mean": 2584.0
+  },
+  "per_query": [
+    {
+      "qid": 3991,
+      "gold_chunk_ids": [
+        "d7edf1059b563e20"
+      ],
+      "top_ids": [
+        "33423c955e7a1adc",
+        "91cc4f247336c10e",
+        "e353cbdd66797efd",
+        "2cba2d3efd521305",
+        "b047688251a14906",
+        "ce5ca8448f83a2db",
+        "4be6392ea83c413e",
+        "a7fbd5d4da2be5be",
+        "f7a50d6334988a7b",
+        "477b8f968451a7eb"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3844,
+      "gold_chunk_ids": [
+        "b4e2bf633ba48585"
+      ],
+      "top_ids": [
+        "d09bc69f3cf5b93c",
+        "1b8d4a56329ced06",
+        "e1ce1f1630071472",
+        "28898652e71613bc",
+        "6f171ede849c5c40",
+        "2e324cac08b07416",
+        "ecaa377eb20c4a46",
+        "7558d84b85410794",
+        "c164f22ca458f47c",
+        "31abcf78e36e2e0f"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3816,
+      "gold_chunk_ids": [
+        "d8bf6f2515cc9b01"
+      ],
+      "top_ids": [
+        "d8bf6f2515cc9b01",
+        "3ff1c3c4f5b5affb",
+        "13f410e9f1b5b73e",
+        "68ed4c02fee972a5",
+        "53d0c1e45f59b88d",
+        "b02f3c1df1f99fce",
+        "e953055c66101a97",
+        "69d38510a6bf85cb",
+        "1a61a3dffa528b71",
+        "5e09188acf5ab8bd"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 3283,
+      "gold_chunk_ids": [
+        "0b72795bbd6a980a"
+      ],
+      "top_ids": [
+        "cdb0eb0e86b11392",
+        "11093629f0b7102b",
+        "d3c2422830ba70c7",
+        "3ec48cba86bd0cf5",
+        "e8b90c961fa1cd46",
+        "7df1bbdd471c0e92",
+        "958d7bde721f0557",
+        "f1644c0442f226de",
+        "0b72795bbd6a980a",
+        "e7c56f9868df3257"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.3010299956639812,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3809,
+      "gold_chunk_ids": [
+        "29174e02082beb0e"
+      ],
+      "top_ids": [
+        "43832b949be30a5d",
+        "866d86d58a411051",
+        "61b70fec4c6ec5f3",
+        "7ff9554b4ee06dc5",
+        "17e510cbcc2117c9",
+        "cc8cdeb0cb7dda95",
+        "544eb6f46b2a922b",
+        "d1ee98e025f47dcb",
+        "125c9c5c8504d295",
+        "e06eeb0cf7a22541"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3737,
+      "gold_chunk_ids": [
+        "0b56e80c5615cfc0"
+      ],
+      "top_ids": [
+        "9eddb32c19712397",
+        "e7c56f9868df3257",
+        "32b484e3224dbf35",
+        "70fd95ccd24c3b56",
+        "2e324cac08b07416",
+        "7bc77560f447fec9",
+        "2a6c37c572fee287",
+        "7a179612001598df",
+        "baf22cf7201d93bc",
+        "dc6baa2ad1a52859"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3672,
+      "gold_chunk_ids": [
+        "3ec48cba86bd0cf5"
+      ],
+      "top_ids": [
+        "3ec48cba86bd0cf5",
+        "e493876a89ec6506",
+        "bd9b80b8c13e9a19",
+        "f1644c0442f226de",
+        "cc138ada7f242314",
+        "0b72795bbd6a980a",
+        "6f5f957052522287",
+        "cdff349ff36ac351",
+        "d4c7f5e19ea8f98a",
+        "b9f508c461196a71"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 3413,
+      "gold_chunk_ids": [
+        "e1ce1f1630071472",
+        "9e8bf7c29a1a6e44"
+      ],
+      "top_ids": [
+        "bd10b47a4940d208",
+        "640d068144be1fe3",
+        "d4137cda1946b3b1",
+        "d1ec9c10f0ca3c1c",
+        "978ce59ae1417647",
+        "57f36652d6b0070b",
+        "679bca971be76d3d",
+        "7bc77560f447fec9",
+        "e29e4e97c4fde2a4",
+        "181b8a3d4719c01b"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3496,
+      "gold_chunk_ids": [
+        "fa64047eacfbbd55"
+      ],
+      "top_ids": [
+        "01245017f09054aa",
+        "9447bc5053a470fb",
+        "edbf6dd772553162",
+        "68f6eed39001a44d",
+        "c028171b15910cff",
+        "e9fc8af71b394857",
+        "5bec6e462e799277",
+        "abce9be178ccfb24",
+        "db61dfa06a8758d1",
+        "0b85ebd0ac4cdff1"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3356,
+      "gold_chunk_ids": [
+        "05780b51db7454d1"
+      ],
+      "top_ids": [
+        "f9b403de2e023532",
+        "1a8ba278e6ab0182",
+        "a2f393a282cad9bf",
+        "1ffa01907a65c614",
+        "bca1c6f26536e8d0",
+        "d20635c746c1d0b8",
+        "fd5e365ad3485a54",
+        "81875bf70a7c0ca2",
+        "2de2a15ae26c157f",
+        "a0c4387d5fe7ff8c"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3305,
+      "gold_chunk_ids": [
+        "bfc9648476a4e95a",
+        "05bdd10191d1c384"
+      ],
+      "top_ids": [
+        "29d63eb48cfe27b0",
+        "3ec380637fc94c41",
+        "b4e91b8a6bb9c821",
+        "bfc9648476a4e95a",
+        "3ac0d8d8ab9e068e",
+        "d3acd3bdd0982143",
+        "e873a8ab52ccad6e",
+        "4ef3e0cd86246e8d",
+        "7cdab95bd13140ea",
+        "afdd61b94c153610"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.5,
+        "hit@5": 1.0,
+        "ndcg@5": 0.2640681225725909,
+        "recall@10": 0.5,
+        "hit@10": 1.0,
+        "ndcg@10": 0.2640681225725909,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3046,
+      "gold_chunk_ids": [
+        "f89ef2e0c2543327"
+      ],
+      "top_ids": [
+        "62c8683d861d6bea",
+        "a7e56e29da5b2d79",
+        "46709a4041d2a165",
+        "c22baa98357c2a87",
+        "55f92ebcea7f230c",
+        "88b0e978a13966b2",
+        "4794114d9ed376b4",
+        "f046a32af8d45a81",
+        "634d805d2d2c7c2e",
+        "709563e9b63625ae"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3067,
+      "gold_chunk_ids": [
+        "94c5d881c7bbe1bc"
+      ],
+      "top_ids": [
+        "53d0c1e45f59b88d",
+        "d8bf6f2515cc9b01",
+        "68ed4c02fee972a5",
+        "3ff1c3c4f5b5affb",
+        "2427403a3e6e7d55",
+        "548f758f07b2eebb",
+        "94c5d881c7bbe1bc",
+        "89ec73500684209b",
+        "fae1ea851d3387ab",
+        "755e418f9b9357d2"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.3333333333333333,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3095,
+      "gold_chunk_ids": [
+        "0800c2cdc844278a"
+      ],
+      "top_ids": [
+        "52c43ce280e482ec",
+        "439ee1d2b1608b6b",
+        "e5cd783720642030",
+        "06ae2e2815208cf6",
+        "11b056248bfa55d0",
+        "ec220753e4a93784",
+        "478169c7a32a9b45",
+        "9e0cc069512d0a83",
+        "f8d2c7931acc0ebc",
+        "0800c2cdc844278a"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.2890648263178879,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3066,
+      "gold_chunk_ids": [
+        "49c2a61e2144a699",
+        "927e658951f63ab6"
+      ],
+      "top_ids": [
+        "40176df7fb82a5e1",
+        "4f320feff99feacc",
+        "d768f124f9af91bb",
+        "d8a944af7ef4cbd6",
+        "25b24d1e25a5df67",
+        "3264b8a2a27ce082",
+        "34604d6cc1f0e3b2",
+        "eb1d9929d10a5e14",
+        "15ec0236cc5cf254",
+        "8cb45be53b9cf2c1"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 3052,
+      "gold_chunk_ids": [
+        "dc00514e586e27e8"
+      ],
+      "top_ids": [
+        "5fde146c6d89c140",
+        "7cde77e832d2e2d2",
+        "b782cbada5c1d979",
+        "1b8d4a56329ced06",
+        "89b207544288f3ff",
+        "fe15b71c76edd23e",
+        "0d9aabc124e30b52",
+        "712cfd38b05468fa",
+        "e778eb3512104a40",
+        "2f2e1e1a753207b0"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 2424,
+      "gold_chunk_ids": [
+        "20748eaa226ad09f"
+      ],
+      "top_ids": [
+        "cc55353485684742",
+        "d51cc1e1a6d8513e",
+        "c6841f22bf2fc419",
+        "58caeb714564bd0a",
+        "66e37cd928ef6332",
+        "dc0c189e9190830c",
+        "47585905c60ea775",
+        "a869f8c99a312be2",
+        "c00b6df2965a33e3",
+        "f7118a7ee5eb6106"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 2882,
+      "gold_chunk_ids": [
+        "44027e88df12d622",
+        "08724bd05bca989f"
+      ],
+      "top_ids": [
+        "004f4f920ecd496c",
+        "2c66732c1734b4cb",
+        "332b3253c9c9cf59",
+        "5cfcbd334acd8b77",
+        "cdd3bfc94bb24d4a",
+        "ce226abec9dbdc04",
+        "3ba7208bc72fc4fa",
+        "590443b5dd2572cc",
+        "ffd7a3682b35d8a4",
+        "383038fac9c2fcf4"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 2237,
+      "gold_chunk_ids": [
+        "24ab09807022c965",
+        "927e658951f63ab6"
+      ],
+      "top_ids": [
+        "6ce4a0a7b1dd0e9e",
+        "24ab09807022c965",
+        "3ff4cd5da74cc8f2",
+        "214d0cb909d3cd7e",
+        "7a0d407d49aefcab",
+        "815c189db300a4c6",
+        "53951d073c5324ee",
+        "81322f6ee9d19f63",
+        "49c2a61e2144a699",
+        "5a1ea4b02c61dd47"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.5,
+        "hit@5": 1.0,
+        "ndcg@5": 0.38685280723454163,
+        "recall@10": 0.5,
+        "hit@10": 1.0,
+        "ndcg@10": 0.38685280723454163,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 2727,
+      "gold_chunk_ids": [
+        "548f758f07b2eebb"
+      ],
+      "top_ids": [
+        "70475fb966de8bfd",
+        "c07d9c6aa0a6854c",
+        "f270d1477153e869",
+        "0854ceb903073e8e",
+        "326c502c982ba3a3",
+        "d4932da97a11e2d2",
+        "619188d8350953be",
+        "92df881e16a3747c",
+        "2fe2add4d5ef5e6d",
+        "530c5656ad1af554"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 2595,
+      "gold_chunk_ids": [
+        "44651e7675ddc6a2"
+      ],
+      "top_ids": [
+        "44651e7675ddc6a2",
+        "85718064733646fb",
+        "9f0497a0159c3c6a",
+        "b488e3e6c9c58b7d",
+        "20949c414a247470",
+        "33efdcf6bc527686",
+        "8fbc95188b7c26c3",
+        "ccfc113ef49f35ea",
+        "a51ae7213fda6f58",
+        "c7570f6331a5bfbb"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 2555,
+      "gold_chunk_ids": [
+        "d392a645d0bad8bd"
+      ],
+      "top_ids": [
+        "295e11e260192052",
+        "54ec004c4160a1c0",
+        "23033cff91abfe1c",
+        "a0a4b981f74a3b0b",
+        "1eac08812a36e388",
+        "81eb079ed180139a",
+        "679bca971be76d3d",
+        "8eff44a560b7e334",
+        "b3f660274bcc15fc",
+        "e6e50e63d6ec5a60"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 2416,
+      "gold_chunk_ids": [
+        "08724bd05bca989f"
+      ],
+      "top_ids": [
+        "cc6709d46374e1b0",
+        "65368749f142fb9a",
+        "ba59bf08242f6421",
+        "e060ed9ad69fcb88",
+        "1d37b072842fcacd",
+        "477b8f968451a7eb",
+        "d1123fb074795f78",
+        "d9cc39261cd78164",
+        "13f410e9f1b5b73e",
+        "73c01d445a3b7f9d"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 2208,
+      "gold_chunk_ids": [
+        "52eed6892b65d245"
+      ],
+      "top_ids": [
+        "91a53f71891aa0ed",
+        "2f2fe9f212adfb82",
+        "3a037e0e364be5da",
+        "d11001141c3d76eb",
+        "09761f6a0fb66df6",
+        "5e76e7fd0b21f200",
+        "29174e02082beb0e",
+        "70a6d0407505d6cc",
+        "52eed6892b65d245",
+        "fef393da281bdf16"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.3010299956639812,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1980,
+      "gold_chunk_ids": [
+        "2887c288fd79349a",
+        "4b1c37e0952ab30c"
+      ],
+      "top_ids": [
+        "2887c288fd79349a",
+        "0ad9fdbabcfaa1be",
+        "83fd0fc02327597d",
+        "a89d455fe24cd379",
+        "3589c42335a6eb36",
+        "5da2ced0f953a515",
+        "97a62e203a628bea",
+        "1fcb0a65706d0a65",
+        "6df2b3c1fdcd8a23",
+        "275b0833225d43d5"
+      ],
+      "metrics": {
+        "recall@1": 0.5,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.5,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6131471927654584,
+        "recall@10": 0.5,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6131471927654584,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1891,
+      "gold_chunk_ids": [
+        "612ec1cb97365865"
+      ],
+      "top_ids": [
+        "0b95e0581ca22685",
+        "4a33c9229e726f61",
+        "c6841f22bf2fc419",
+        "dbcbdd82202d3a5a",
+        "1dbb5f87c0f814b5",
+        "a9a19533083ddcb7",
+        "77bb19e338451eff",
+        "baf79e76a38b67f4",
+        "5568f2213a4a94a0",
+        "76d92f2c87c38061"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000000,
+      "gold_chunk_ids": [
+        "ad1fbf34cc1af166"
+      ],
+      "top_ids": [
+        "ad1fbf34cc1af166",
+        "1aa9f8db3d94947f",
+        "52eed6892b65d245",
+        "711e519aad14335a",
+        "5e270d19915cd424",
+        "c8dc92b42de2dcad",
+        "ac91eb62a06df838",
+        "b771f69f6e34a95c",
+        "fff7db8f985ef65a",
+        "a0e12e60dda981a1"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000001,
+      "gold_chunk_ids": [
+        "0b744fd5d34e89a5"
+      ],
+      "top_ids": [
+        "0b744fd5d34e89a5",
+        "3292e460328e6c46",
+        "a9f3a66ea6924f23",
+        "e2cf98641822065c",
+        "d1c2ca56c2c19f3b",
+        "fbfb05c302d82b11",
+        "a75beabdb9bca083",
+        "899fd80a042f8c99",
+        "7ffbeb8bcec3256a",
+        "0cf2c5b0a85915eb"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000002,
+      "gold_chunk_ids": [
+        "17cc7e6408941a94"
+      ],
+      "top_ids": [
+        "17cc7e6408941a94",
+        "67993a70d5b34087",
+        "301b72d7ec4c4828",
+        "16f3ef18799f6556",
+        "cd8d49a6e9c122da",
+        "0bb4295fcac52ad1",
+        "5951a8821637b3f1",
+        "737e5b18649d6e40",
+        "da0325d7a4a8fbfe",
+        "7be55528629a2e01"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000003,
+      "gold_chunk_ids": [
+        "0e19a14c40da2494"
+      ],
+      "top_ids": [
+        "0e19a14c40da2494",
+        "33af10375c0128d0",
+        "f8369cc3cd04ce00",
+        "54d49e76cf5f51fb",
+        "55e9c0e124cca74c",
+        "027fe1d7e1490330",
+        "d56367a81a621dd3",
+        "8d3fb453825eb0c8",
+        "9226eaafdf8f72d6",
+        "e89779e7e98242c4"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000004,
+      "gold_chunk_ids": [
+        "d6601e40be588cf4"
+      ],
+      "top_ids": [
+        "d6601e40be588cf4",
+        "8d9704f113fdb785",
+        "296d82da1e153777",
+        "665aa38bff88a095",
+        "4a6f19a67a8fe451",
+        "bc3e5e4776df9b7f",
+        "47ff9c3f984612af",
+        "fe86ced9d9c52acc",
+        "c32cbc40821af206",
+        "c8d2184bd6c16fe4"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000005,
+      "gold_chunk_ids": [
+        "0ac4934ccd46dfa7"
+      ],
+      "top_ids": [
+        "ddea11a9982ac26c",
+        "0ac4934ccd46dfa7",
+        "1384624b1c5ff88b",
+        "244109c903e73787",
+        "88accaf2aa5edd92",
+        "3fa57f3e7c375456",
+        "75250020f98c3451",
+        "c789c3823c881f6b",
+        "54e07c6e01350716",
+        "a2ff243b066e80ba"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000006,
+      "gold_chunk_ids": [
+        "50aeb94a51cf4df4"
+      ],
+      "top_ids": [
+        "50aeb94a51cf4df4",
+        "30f74c5f163563ea",
+        "758257cd1d46a7a4",
+        "6882198115c9c00e",
+        "61b70fec4c6ec5f3",
+        "17cbfedc0e79ee97",
+        "89584e6c62b5c352",
+        "1c9585a4cca7537e",
+        "058eca00c62effd2",
+        "3f5193d957ef5c5c"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000007,
+      "gold_chunk_ids": [
+        "dc8bdcb4eaf13df6"
+      ],
+      "top_ids": [
+        "2cad698b80a8f3a6",
+        "dc8bdcb4eaf13df6",
+        "c2c9fb93e5c79b30",
+        "58e5dc4f3cb03d1b",
+        "1c8bd9b8f5b4d004",
+        "a97c07ec203b8959",
+        "1e300151ea0ecc5e",
+        "f0bdd9a970566518",
+        "b3e7df378f31ebb6",
+        "b7c0007d2392242a"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000008,
+      "gold_chunk_ids": [
+        "9043a0d71cdc18e2"
+      ],
+      "top_ids": [
+        "9043a0d71cdc18e2",
+        "04fd389539646b72",
+        "d3c2422830ba70c7",
+        "891204f569c86a4f",
+        "71ee477d4127695a",
+        "123992784b77b3c0",
+        "d1a953aaf4431b9e",
+        "61b70fec4c6ec5f3",
+        "c3387f80b97d8916",
+        "efaa25ac47b7f25d"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000009,
+      "gold_chunk_ids": [
+        "78fddf1e5acf747a"
+      ],
+      "top_ids": [
+        "736aa5261df33fc8",
+        "78fddf1e5acf747a",
+        "df4f8554f9009783",
+        "f96ba50154a6941d",
+        "22d2cc18e5af333d",
+        "883e641e8273029e",
+        "3d12c924bdbfe03b",
+        "b0e3bcaf9fb0b223",
+        "832187b6e2a057c6",
+        "ec6be33d9032e1f6"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000010,
+      "gold_chunk_ids": [
+        "d14d5cddc9c88d38"
+      ],
+      "top_ids": [
+        "0bd649b63851e78c",
+        "4b7b050fe5ef24b2",
+        "973fa2bab07b35c3",
+        "c57e2554bf8dcdfe",
+        "a0d48bdc0943504c",
+        "c8fea0e711433279",
+        "b162ba69b4216dfc",
+        "c87929d0de35cb76",
+        "1a79205a170e1665",
+        "ddb55f6916416b99"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000011,
+      "gold_chunk_ids": [
+        "a0b38ed8d2b5e248"
+      ],
+      "top_ids": [
+        "a0b38ed8d2b5e248",
+        "156ae60f2d3e2534",
+        "ddcaa1a93ce47494",
+        "c2cabdf2fb20a614",
+        "f8369cc3cd04ce00",
+        "44a6e577a129e1f9",
+        "5cda71f191f77bc0",
+        "84276787734e120c",
+        "403c0a55991856a6",
+        "3fff427c6125758d"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000012,
+      "gold_chunk_ids": [
+        "94c5d881c7bbe1bc"
+      ],
+      "top_ids": [
+        "94c5d881c7bbe1bc",
+        "83fd0fc02327597d",
+        "a219084929e5c00c",
+        "da5034ce20567c37",
+        "fff3850920a1f559",
+        "3aa63244fdd1fc01",
+        "f5664c63d27abc23",
+        "69f41ea35a73b33f",
+        "ad618fcffc6fb552",
+        "43a1bc7dd7bb0418"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000013,
+      "gold_chunk_ids": [
+        "6a9d391a51c7ff94"
+      ],
+      "top_ids": [
+        "17ce70e9f077a583",
+        "6021501fafb6dd0e",
+        "47a6c115ba11c4b7",
+        "c259762c7ddbfed4",
+        "e266db7dfcbaeea2",
+        "2ccc9c9b67eb3491",
+        "a75f38a5a8c61a6c",
+        "66d0da9f77fc9e9d",
+        "0b09a11976a679d0",
+        "9a30cb1a3194188e"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000014,
+      "gold_chunk_ids": [
+        "71ee477d4127695a"
+      ],
+      "top_ids": [
+        "17bd2a42c9b7b51b",
+        "71ee477d4127695a",
+        "23da7e720af97ed6",
+        "81c996214c7b27ce",
+        "3dcda875fda54604",
+        "74693ff53b95870f",
+        "8f8eee7658675a2d",
+        "02c2f3c75f57c597",
+        "dab5afd4d2c0f872",
+        "0f4db9b77dd6da57"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000015,
+      "gold_chunk_ids": [
+        "12d9b49332184617"
+      ],
+      "top_ids": [
+        "12d9b49332184617",
+        "42f77ac1947937c4",
+        "5a3d0f999e26fd2c",
+        "71aea3a1e3bb707c",
+        "de775e72d0875b75",
+        "a4b9e5c40302afd0",
+        "cb3b2d41bff1bbb3",
+        "1de2790ff57bfed7",
+        "cba317693a4a0140",
+        "6ab21125fd280898"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000016,
+      "gold_chunk_ids": [
+        "0a9737d3aab4ce44"
+      ],
+      "top_ids": [
+        "0a9737d3aab4ce44",
+        "1179fbc113b0b41e",
+        "46c9aca89c4f3024",
+        "6629b806ac096efc",
+        "ca87941643f55159",
+        "5704c1828af0f802",
+        "bb2e911b9d848c9f",
+        "2a0e62419a733d88",
+        "7854306e62eda2a4",
+        "709a71dee7452730"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000017,
+      "gold_chunk_ids": [
+        "b91fb34b45e11aae"
+      ],
+      "top_ids": [
+        "93293e814857d2cb",
+        "0b7e2571a0a67305",
+        "b2015974090f45c2",
+        "bf76de076cb7bdc7",
+        "65bc74e5532407d1",
+        "65f8ca362cf67fdc",
+        "73d984fc0d7bb0be",
+        "b8e5d165fd975b6c",
+        "77ff922bff6bcb12",
+        "b1332341fa7af07e"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000018,
+      "gold_chunk_ids": [
+        "45aa1639011e8234"
+      ],
+      "top_ids": [
+        "410b82edae06bd85",
+        "45aa1639011e8234",
+        "5fc5cfafea71caf8",
+        "231ff4bbe52dcbe1",
+        "47847c0335b19ce0",
+        "3ec380637fc94c41",
+        "b979595e30a3e089",
+        "151d65a81bddc409",
+        "7c6c7392f6a894d2",
+        "4fbb73602ff5acd4"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000019,
+      "gold_chunk_ids": [
+        "61ab4e1ae732c127"
+      ],
+      "top_ids": [
+        "8e39f1b481383967",
+        "84928cd5d3025955",
+        "d409adb64e8e7a25",
+        "605f75f93c2f954b",
+        "6cf5eb5bf9a6db8b",
+        "46d81a52e2577b85",
+        "168a74ba24e1429f",
+        "ec61f689048bcd4e",
+        "43b65f5f02492fe5",
+        "447e9b225e0a9f90"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000020,
+      "gold_chunk_ids": [
+        "8fe42eba934c597a"
+      ],
+      "top_ids": [
+        "31b922fceaa31d68",
+        "8fe42eba934c597a",
+        "d9299fb7f9f5a69b",
+        "c1901c3928b5f833",
+        "418b5a0ca663d642",
+        "416792150310da50",
+        "dcf22a892f035a38",
+        "4d614b360633eb2e",
+        "e06faf60e3fd5956",
+        "1bc734610e611c73"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000021,
+      "gold_chunk_ids": [
+        "4af915ba753a6a4c"
+      ],
+      "top_ids": [
+        "5441729e13a4463e",
+        "2a879145d3711da3",
+        "9bc98963608e691f",
+        "72b1d1733b155699",
+        "f937f188708738f6",
+        "4af915ba753a6a4c",
+        "bc3e4c9df0f92f9f",
+        "9b76ab22afff9108",
+        "00ce959225c368fd",
+        "7577c0da2489957e"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.3562071871080222,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000022,
+      "gold_chunk_ids": [
+        "d41e10daccffb43b"
+      ],
+      "top_ids": [
+        "cbaec0884e8122ff",
+        "d41e10daccffb43b",
+        "6d103b6321dffaf2",
+        "50a639de26ade5a0",
+        "5b9c31c64ae07e48",
+        "bb036c92914f1656",
+        "44651e7675ddc6a2",
+        "888cb834150b6d28",
+        "7ea6936edcfaf43a",
+        "df9d3fbf32674f6b"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000023,
+      "gold_chunk_ids": [
+        "f86efbba5b2ddb67"
+      ],
+      "top_ids": [
+        "f86efbba5b2ddb67",
+        "4d82d02d512f5cd8",
+        "c045f06ae2548593",
+        "b779ba521c117fbb",
+        "f0c543298c1e9061",
+        "87575b9c4bed8ee8",
+        "bc3f877541580765",
+        "a0e07b76446c55b4",
+        "f0c932e333cfc2c0",
+        "341e209df718f927"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000024,
+      "gold_chunk_ids": [
+        "e2b95ff6860677d6"
+      ],
+      "top_ids": [
+        "e2b95ff6860677d6",
+        "ed3059545c0780c7",
+        "aea11bacc84d0e0c",
+        "d598895bc8615049",
+        "77351f3aef8c176a",
+        "c9eeb59266bd6963",
+        "8eb54346a10f9e18",
+        "a2ff243b066e80ba",
+        "4d14d83def2b77cb",
+        "c0c8ac373ff370a1"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000025,
+      "gold_chunk_ids": [
+        "ccb540c19b8f3653"
+      ],
+      "top_ids": [
+        "ccb540c19b8f3653",
+        "a4c57fc1e346f581",
+        "b0cab825cfa40f27",
+        "d6b6c78a872a203f",
+        "9f2a0c7728bb66a2",
+        "ef4490e91de951a4",
+        "7ae1f94371f5cc93",
+        "379989ab4ca94637",
+        "a938ff8508ec2beb",
+        "91652e688689a58c"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000026,
+      "gold_chunk_ids": [
+        "5f10e09a08fb48f9"
+      ],
+      "top_ids": [
+        "5f10e09a08fb48f9",
+        "8939f959d61d0a82",
+        "771dc4231bd25658",
+        "e7b7ad728332e913",
+        "f2b7bd790477d267",
+        "68fa6553ac7b1be1",
+        "74d0635c9b59b598",
+        "aa6bfbbff0e1af71",
+        "62c67cb2b5687fed",
+        "bf95dc8a318f61f5"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000027,
+      "gold_chunk_ids": [
+        "2db99e632d315e97"
+      ],
+      "top_ids": [
+        "2db99e632d315e97",
+        "adee58db743369fc",
+        "d38e6f7a83be8c41",
+        "548c4b2b62b9db10",
+        "5e31aba8ce773a40",
+        "3813d1532e74bea8",
+        "88b0e978a13966b2",
+        "9544d9708f7aa43b",
+        "829e7ef25764e0f8",
+        "14103b15794691a2"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000028,
+      "gold_chunk_ids": [
+        "dff0ad4e7b3c552b"
+      ],
+      "top_ids": [
+        "6dd502eabf0f9911",
+        "b08d124a9b766f39",
+        "dff0ad4e7b3c552b",
+        "79607b491c2ba4f4",
+        "4e06e05a5984d75d",
+        "a7f9ba32cd2b2b29",
+        "3ba74f77028de891",
+        "cb9a731f63d95539",
+        "3df5ab9f166e5e35",
+        "630e741dd9fcbb08"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.5,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.5,
+        "mrr@3": 0.3333333333333333
+      }
+    },
+    {
+      "qid": 1000029,
+      "gold_chunk_ids": [
+        "27702d5a3172f704"
+      ],
+      "top_ids": [
+        "cc8b95bb2fa9b08d",
+        "346d871d358ec235",
+        "27702d5a3172f704",
+        "ab1b4fef451ca260",
+        "a29c203e24983d25",
+        "18d5a9fca055b6ce",
+        "340853e881207fbb",
+        "78c49fdd9566c3cd",
+        "f285b748e2dbc9a6",
+        "22196984af972bfb"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.5,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.5,
+        "mrr@3": 0.3333333333333333
+      }
+    },
+    {
+      "qid": 1000030,
+      "gold_chunk_ids": [
+        "fdf0e2aa87795aab"
+      ],
+      "top_ids": [
+        "2aa68bcd6555c574",
+        "85eaef8b1db0d807",
+        "eb007b2d6c8e9e42",
+        "04c6eb9f885a58e5",
+        "12d09a7ee2fbc8d5",
+        "897f4383ee19c584",
+        "15b108dea5c2c2ee",
+        "fe96f9a558eac4bd",
+        "faceee6164404243",
+        "ff7619065c05a470"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000031,
+      "gold_chunk_ids": [
+        "de90c07c810b4888"
+      ],
+      "top_ids": [
+        "de90c07c810b4888",
+        "5a39f43c174a56dc",
+        "8e7484b37b1683fe",
+        "eacc2de133752b89",
+        "4b232874e658d829",
+        "ccf35239850acfeb",
+        "3536d176b5781170",
+        "90e1e9a9216b0b2f",
+        "ec6be33d9032e1f6",
+        "56a50f7787279ec3"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000032,
+      "gold_chunk_ids": [
+        "cfbe57a1e4c461d8"
+      ],
+      "top_ids": [
+        "1c7d7e9e22047b40",
+        "fc6cfa2dcda0e09a",
+        "7e614e65c45995d9",
+        "c9eeb59266bd6963",
+        "286c495f723e64fa",
+        "cfbe57a1e4c461d8",
+        "51d1a1cf139d882b",
+        "8d924813444f9d32",
+        "4a0ba075b36b4acb",
+        "7320842876bdd21a"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.3562071871080222,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000033,
+      "gold_chunk_ids": [
+        "6df2d40f7c0b71fd"
+      ],
+      "top_ids": [
+        "1ec85d3bdc927d90",
+        "5e09188acf5ab8bd",
+        "6df2d40f7c0b71fd",
+        "fd30dbe8f640dcd7",
+        "d89f24f43d712e8d",
+        "94182437e1dd7e80",
+        "6d872a139ff0f8c1",
+        "68dd3ab93fa14a46",
+        "53cd7b81ab7b7018",
+        "0ce03d5097bb7947"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.5,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.5,
+        "mrr@3": 0.3333333333333333
+      }
+    },
+    {
+      "qid": 1000034,
+      "gold_chunk_ids": [
+        "a777c74d6e791060"
+      ],
+      "top_ids": [
+        "79abd5d734bc5def",
+        "310c3f4cc28c601b",
+        "3bd56e06c678720e",
+        "bf2a807d5bbc6d85",
+        "bfad894c58345b0d",
+        "5f55640dfcb4f79a",
+        "8f27d17ca47974b5",
+        "a777c74d6e791060",
+        "d820acac73ec4849",
+        "1228ad89901c0bb2"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.31546487678572877,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000035,
+      "gold_chunk_ids": [
+        "b34fad35c05e54a5"
+      ],
+      "top_ids": [
+        "44199fadee0a63d2",
+        "45741cf98bfeb0a3",
+        "b34fad35c05e54a5",
+        "49defed8f9ab3b37",
+        "1bb13ee23774e895",
+        "c2fc07aa2372b374",
+        "777f109c3b9f7b28",
+        "47af32047afc4298",
+        "d7f04e6f88ff80cc",
+        "883d70e703ba6a83"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.5,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.5,
+        "mrr@3": 0.3333333333333333
+      }
+    },
+    {
+      "qid": 1000036,
+      "gold_chunk_ids": [
+        "a2f393a282cad9bf"
+      ],
+      "top_ids": [
+        "3ac0d8d8ab9e068e",
+        "54acfb3b3e898b5a",
+        "754e93b53ee2fde5",
+        "a2f393a282cad9bf",
+        "303704caa655a1ee",
+        "a92bf285efa8f724",
+        "2de2a15ae26c157f",
+        "d510d1d508bf622c",
+        "2c47ae91293c554a",
+        "ba5bde4fc3abae6a"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.43067655807339306,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.43067655807339306,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000037,
+      "gold_chunk_ids": [
+        "5321da121f1ace4a"
+      ],
+      "top_ids": [
+        "5321da121f1ace4a",
+        "78b3290b999fe36c",
+        "df1516ce220c7bd0",
+        "3ca7869c6b48ef6a",
+        "ca0bb9c173327f70",
+        "6bf6fb8b27e7fcc0",
+        "9747909725a2540b",
+        "9ec975661ed05d54",
+        "57ca6d7113f6e024",
+        "ae048bbc192e7783"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000038,
+      "gold_chunk_ids": [
+        "30817de858dc7f7c"
+      ],
+      "top_ids": [
+        "30817de858dc7f7c",
+        "6fd85b938579cc80",
+        "f39a5d841e5adc10",
+        "8fe89e944a33a7aa",
+        "4e35027c3bf00b74",
+        "ef3a0e92e9ace954",
+        "5d5c5cc15f1b3825",
+        "577af0c36011cc29",
+        "e0f3b56ad36c5652",
+        "2de2a15ae26c157f"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000039,
+      "gold_chunk_ids": [
+        "75033049784862e1"
+      ],
+      "top_ids": [
+        "45418aed91f36115",
+        "c7a2462f288c8476",
+        "77c19654374ddbd5",
+        "15ac8b226a359179",
+        "75033049784862e1",
+        "865bb4427a5f4da2",
+        "15801d9c1a21d33c",
+        "9b5031afd0493ba7",
+        "f7aa1d5d24b104d8",
+        "6291bf7c4579c719"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.38685280723454163,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.38685280723454163,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000040,
+      "gold_chunk_ids": [
+        "d7c89b0d1ef55fc3"
+      ],
+      "top_ids": [
+        "d7c89b0d1ef55fc3",
+        "0c28d38f708cf2b7",
+        "9a930054fd31015f",
+        "0de6e163d62e1642",
+        "2272a2af7cf3e35d",
+        "156ae60f2d3e2534",
+        "3c0f360f41372b9e",
+        "94101149602b54b4",
+        "d89f24f43d712e8d",
+        "999d6f339b6374ab"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000041,
+      "gold_chunk_ids": [
+        "29adbea0644d023b"
+      ],
+      "top_ids": [
+        "9b5046a82ca6cbeb",
+        "e938acc68b09ad59",
+        "23b7ae036320a8ab",
+        "cb10746aec0f6988",
+        "4d794648bb5d8d30",
+        "eea3511ded4a5163",
+        "6f605b98ea8a7c97",
+        "725abd4e44cfb980",
+        "334916c7fd3cdac4",
+        "3d1cd10d82b7d93f"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000042,
+      "gold_chunk_ids": [
+        "714b1ff74f211798"
+      ],
+      "top_ids": [
+        "714b1ff74f211798",
+        "92efd5aaca0a9318",
+        "5498794533d6de5b",
+        "df62bdde16f81df0",
+        "5a4c4fbaf856059e",
+        "717fef853d125ce9",
+        "a9e4fa237b33883f",
+        "cfc93ead9756f41c",
+        "07a40a60246ba62f",
+        "dc57c5a69f3db241"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000043,
+      "gold_chunk_ids": [
+        "5a1b233cbd9a751a"
+      ],
+      "top_ids": [
+        "5a1b233cbd9a751a",
+        "c812c249b49ec998",
+        "28db1be75be28d8a",
+        "3d0356d39187d834",
+        "b47616ad01b2c9d6",
+        "a8307dad198c8dba",
+        "402d0c56d1cae02e",
+        "4ba40af26156d51b",
+        "a828a3efc8ed738e",
+        "69fbaa53e5844ff9"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000044,
+      "gold_chunk_ids": [
+        "c1c304c410f246f1"
+      ],
+      "top_ids": [
+        "648c744bd88c9981",
+        "c8c14acf30980c50",
+        "ec40028940a40421",
+        "c887aee918ee21d2",
+        "c1c304c410f246f1",
+        "60388c71b09ab2ee",
+        "335bf932c0256f9c",
+        "c790f0c1a218c3d9",
+        "48a2d96bc9425a9a",
+        "78c49fdd9566c3cd"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.38685280723454163,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.38685280723454163,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000045,
+      "gold_chunk_ids": [
+        "56f318d3cebc6931"
+      ],
+      "top_ids": [
+        "55e93bebdd1940c0",
+        "56f318d3cebc6931",
+        "a421455fd4de0b11",
+        "f046a32af8d45a81",
+        "9f4811b905faaa5e",
+        "ed733586ed87330f",
+        "19452192e5e5f29d",
+        "bfe890dbf5652c06",
+        "0a1e49fd41f137d1",
+        "538a6ef0e27ba931"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000046,
+      "gold_chunk_ids": [
+        "db728db7aab04790"
+      ],
+      "top_ids": [
+        "0d2e964ddde8bd1d",
+        "db728db7aab04790",
+        "df26a21d0ef55eac",
+        "fe15b71c76edd23e",
+        "369e053e19b93b3f",
+        "bcbba0b5bf4f6f26",
+        "24c68907c1837cff",
+        "3cf31e680cb7f9ba",
+        "5a0b18079c206909",
+        "7b06018bff34131b"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000047,
+      "gold_chunk_ids": [
+        "790466bcf34e4f84"
+      ],
+      "top_ids": [
+        "790466bcf34e4f84",
+        "c374cec66cc72248",
+        "8696d8912e2fc7d5",
+        "1eac08812a36e388",
+        "698396673577cc8e",
+        "66c521cb35dbd168",
+        "809f13d46b377ea6",
+        "54ec004c4160a1c0",
+        "157622d05dcf67a9",
+        "d392a645d0bad8bd"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000048,
+      "gold_chunk_ids": [
+        "44030039745c2aaf"
+      ],
+      "top_ids": [
+        "549aeb62fae32f1e",
+        "44030039745c2aaf",
+        "e54df84c235a5a0d",
+        "fd251724d7bbc591",
+        "548c09d4253e8f99",
+        "6a1075e56c744496",
+        "3ab26f01e7ed9d1a",
+        "7c253ea29cf40b3d",
+        "07a6eb6dab4676fb",
+        "1d2767e481ddc5a0"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000049,
+      "gold_chunk_ids": [
+        "c16e214597b19654"
+      ],
+      "top_ids": [
+        "c16e214597b19654",
+        "6aa499569194cb8c",
+        "bc4e1a16f9f2ad7a",
+        "72fcf89ab8d94db2",
+        "8dc8a42bae28e53d",
+        "55b5a343d3f2b6b7",
+        "b469e945527d3041",
+        "74d169d0e14cfec1",
+        "6cba3fdb1e6f098e",
+        "ade64b79057bda32"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000050,
+      "gold_chunk_ids": [
+        "6851209805a5aea6"
+      ],
+      "top_ids": [
+        "3518253cecdbc603",
+        "6851209805a5aea6",
+        "0e451a149fb66850",
+        "ad3e1be67d4dc381",
+        "a21c1c8de21f3cec",
+        "dae0778a92da8f15",
+        "7a5e0137db6dbdf9",
+        "e38b15b8b14f9160",
+        "b3ac0ff43dc6cf89",
+        "eb3aee3e1af29f9b"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000051,
+      "gold_chunk_ids": [
+        "9033874febfbcf9b"
+      ],
+      "top_ids": [
+        "9400962d7c508906",
+        "d95df816a859aa7c",
+        "25ea2873befbbaa1",
+        "9033874febfbcf9b",
+        "a374014e68451cd9",
+        "aea16661ccbae99d",
+        "8b9213f027eef62c",
+        "e5b7e30dae3dd8c1",
+        "6a8dee3958c388ea",
+        "8e462876f2666dd8"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.43067655807339306,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.43067655807339306,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000052,
+      "gold_chunk_ids": [
+        "ae151fe7864532cd"
+      ],
+      "top_ids": [
+        "7c33aa1406cb53b1",
+        "ae151fe7864532cd",
+        "b7063e4e506ff7d5",
+        "d4db58243787bcff",
+        "0d077a2f9ef450b4",
+        "6dc875d5d92f20f5",
+        "3f0930d7023608cb",
+        "7190bacc75dd86f5",
+        "573abd08675e7134",
+        "84928cd5d3025955"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000053,
+      "gold_chunk_ids": [
+        "610174faf73270fe"
+      ],
+      "top_ids": [
+        "20949c414a247470",
+        "a26b46a0f88c3495",
+        "11de15e2c1537025",
+        "3dcf04cec336f5e3",
+        "c7570f6331a5bfbb",
+        "44651e7675ddc6a2",
+        "c2cbc6fef2347c57",
+        "d560847da563d4de",
+        "5e4bbbee1dabfbcc",
+        "fe929effc52fe8fb"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000054,
+      "gold_chunk_ids": [
+        "48e751ab58c995cc"
+      ],
+      "top_ids": [
+        "48e751ab58c995cc",
+        "320610d7db2c3ded",
+        "1cf09bc09b864e4c",
+        "223d9df19a2d0a8e",
+        "82bd8adc5ef6a595",
+        "8ec4627ee6ef3e03",
+        "8f50ede41fcad186",
+        "d4db58243787bcff",
+        "e863a0fef10415fb",
+        "107d8bfa231558e5"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000055,
+      "gold_chunk_ids": [
+        "9ae006d56ba468b9"
+      ],
+      "top_ids": [
+        "e30351a0f7887673",
+        "b83280c9cd7284e8",
+        "937559000c64c1b8",
+        "f1d59cfa19dab59e",
+        "53143651ef27298c",
+        "c57e2554bf8dcdfe",
+        "eb44eedaae5a7346",
+        "12bb18b85944cd3d",
+        "1b073b9520a1be79",
+        "8978433b3d34e4ca"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000056,
+      "gold_chunk_ids": [
+        "6113ae06823cde79"
+      ],
+      "top_ids": [
+        "6113ae06823cde79",
+        "4d65d4226c5b0950",
+        "6e2e233647339d3e",
+        "564a092972bf2ccf",
+        "b6685ada4e905f78",
+        "b6dc7f577c05bc01",
+        "cefa52a9d291202f",
+        "61a90520dd69288c",
+        "caf4cf36ebe63f77",
+        "f1d284c3763f3a8f"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000057,
+      "gold_chunk_ids": [
+        "32c43a218083bd8b"
+      ],
+      "top_ids": [
+        "17b89783df30d7f3",
+        "32c43a218083bd8b",
+        "7815fdfc9e11735b",
+        "90be9d7e1d365deb",
+        "c0942dc43140dc2b",
+        "c26098e2dcd430dd",
+        "066c2cd4c93d3981",
+        "f7d8af6241b17e5a",
+        "a610c04e64994658",
+        "df5fb5bf79b1723c"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000058,
+      "gold_chunk_ids": [
+        "b2ba0bce3050ccae"
+      ],
+      "top_ids": [
+        "3ff4bbb8f1b1e978",
+        "b2ba0bce3050ccae",
+        "3ff1c3c4f5b5affb",
+        "85597e44582cdc66",
+        "7b484e01242226d0",
+        "143e894478ec738d",
+        "50b49de2e8b63248",
+        "95d99e9dce8f9766",
+        "ff9268ac3a98d26d",
+        "866d86d58a411051"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000059,
+      "gold_chunk_ids": [
+        "0505331e8ce73480"
+      ],
+      "top_ids": [
+        "0505331e8ce73480",
+        "8870cc573a3a8136",
+        "8894fcc70ab21cf8",
+        "29df6bbacbb13c2c",
+        "9dfa03c11184ae6f",
+        "398164c4e6736275",
+        "17154524e65f0fe3",
+        "c854bcfcd4747138",
+        "aae71ef31ae92d6b",
+        "f4c00a2b756ca129"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000060,
+      "gold_chunk_ids": [
+        "0d371ed8a8cd34a6"
+      ],
+      "top_ids": [
+        "0d371ed8a8cd34a6",
+        "a92c958814dfc638",
+        "02fe42d4cb44609a",
+        "78e20924e670db2b",
+        "548c14ec80ea4512",
+        "93d30b65a7e23b6a",
+        "09bb03b7024331ec",
+        "43d21b23f4e77cbc",
+        "32b484e3224dbf35",
+        "bf8ae9f766ad013a"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000061,
+      "gold_chunk_ids": [
+        "ec2daa4489f27a38"
+      ],
+      "top_ids": [
+        "ec2daa4489f27a38",
+        "83618a6b9488c8c5",
+        "400780da56deefae",
+        "7b4ae6635a964a6d",
+        "ed97fa234bf6a79e",
+        "26d0221fd2b67377",
+        "b986dbd7510bdb5b",
+        "cde676e78a5176a9",
+        "1a61a3dffa528b71",
+        "394a26f5497d0a6a"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000062,
+      "gold_chunk_ids": [
+        "2445a6c2c619e6e3"
+      ],
+      "top_ids": [
+        "2445a6c2c619e6e3",
+        "af1cd2809ce1d154",
+        "94ee7212a8ef362e",
+        "99878d598a328032",
+        "717d96ec478bc5d5",
+        "ff40ca7bddd50f20",
+        "5e9076a721a1a5f1",
+        "ee1bc8a2a529a45e",
+        "c082dc849f66ee27",
+        "c78837c43027be97"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000063,
+      "gold_chunk_ids": [
+        "c072b7be8243ce5f"
+      ],
+      "top_ids": [
+        "16bc1f721073009b",
+        "2e28c2a52263a852",
+        "1820cb5ef03592d1",
+        "deb16b8777a397a2",
+        "10ac8b7d8d742a4b",
+        "aebcbc522b979c88",
+        "6a598080bc552c70",
+        "ff3aaf7a791e94b0",
+        "29b35451c2409cc1",
+        "6ce4a0a7b1dd0e9e"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000064,
+      "gold_chunk_ids": [
+        "7a62f6eed802cfcd"
+      ],
+      "top_ids": [
+        "0ba26245ff1f763d",
+        "7a62f6eed802cfcd",
+        "644349f0753ac5cb",
+        "1d61b785bb5d6b5b",
+        "4d47dc5be15ce802",
+        "3497cd228e479235",
+        "3faf2276f751f544",
+        "f138ec9df7c9a3e6",
+        "af4c9b8c9fd3ed78",
+        "f12c198c02ea5acd"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000065,
+      "gold_chunk_ids": [
+        "5ec3460f4c62cdf3"
+      ],
+      "top_ids": [
+        "5ec3460f4c62cdf3",
+        "648308af3725526a",
+        "89db71bd16fd7a57",
+        "3d0356d39187d834",
+        "4a5b2f7d3bca8e90",
+        "00a67b6fca3cd459",
+        "e016d594b9d3eb67",
+        "3ee702486d2e1925",
+        "a9b430878ab57bd1",
+        "450b4b143e98d282"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000066,
+      "gold_chunk_ids": [
+        "c4176658b96ae06a"
+      ],
+      "top_ids": [
+        "7a4d3cfbecc606bb",
+        "c4176658b96ae06a",
+        "9c426b53f24e2599",
+        "eabe658d32c794e2",
+        "323bdc60ad7e01b6",
+        "d38e6f7a83be8c41",
+        "7483d9a0b19daedf",
+        "d872f614353a383f",
+        "4abfa3f424e99509",
+        "7f68334c15354de3"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6309297535714575,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6309297535714575,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000067,
+      "gold_chunk_ids": [
+        "19d60bf3aa49ee6f"
+      ],
+      "top_ids": [
+        "19d60bf3aa49ee6f",
+        "7b2c989e5e32ed5c",
+        "229ad7fb53dfea32",
+        "7a179612001598df",
+        "17edb15eeb49c896",
+        "8d4172d6f631f606",
+        "0bc66fba1dcc6448",
+        "fca1554cb2ad2539",
+        "6882198115c9c00e",
+        "a24ee85589285bdd"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000068,
+      "gold_chunk_ids": [
+        "c6faa4a062eb520b"
+      ],
+      "top_ids": [
+        "c6faa4a062eb520b",
+        "a8e3491e558b472b",
+        "97a6c854af094ea1",
+        "89f820f64ba50ea2",
+        "b5f98d62d597785b",
+        "f90a68d0ed91c747",
+        "3124f3aa27451b1c",
+        "56290319c49c8d9e",
+        "f216a189d3c53f6e",
+        "6cc769c9ccbd8f73"
+      ],
+      "metrics": {
+        "recall@1": 1.0,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000069,
+      "gold_chunk_ids": [
+        "bb0253b3a1f2de92"
+      ],
+      "top_ids": [
+        "0bfb7979c83a7942",
+        "36375a5986fa8c01",
+        "7f49543b8f98f288",
+        "bb0253b3a1f2de92",
+        "e3e35285a6565371",
+        "36b4594aecaa7cdf",
+        "5ef8162b4547cb47",
+        "b6683eb32d762308",
+        "100e980d70350727",
+        "944812d8e1893ec9"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 0.43067655807339306,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.43067655807339306,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000070,
+      "gold_chunk_ids": [
+        "07a5f9da6e51ed3f",
+        "8ae3c200ec4c84b7",
+        "e986d11a2c9a4857"
+      ],
+      "top_ids": [
+        "8ae3c200ec4c84b7",
+        "ffd7a3682b35d8a4",
+        "83f8c0e18e381b13",
+        "77b6087355c4a63f",
+        "36442ec9dd4d2870",
+        "e99b624db1ae5479",
+        "c028171b15910cff",
+        "20949c414a247470",
+        "64c81af600c0b432",
+        "07a5f9da6e51ed3f"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6049306994552042,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000071,
+      "gold_chunk_ids": [
+        "91a53f71891aa0ed",
+        "9e34f45b9b40bc36"
+      ],
+      "top_ids": [
+        "9e34f45b9b40bc36",
+        "91a53f71891aa0ed",
+        "e4b49a77f516a424",
+        "57bef4345f3c65cd",
+        "d11001141c3d76eb",
+        "550afdea367dd068",
+        "6b041991287ddad8",
+        "1fcb0a65706d0a65",
+        "477b8f968451a7eb",
+        "3822da67bbb5afa4"
+      ],
+      "metrics": {
+        "recall@1": 0.5,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000072,
+      "gold_chunk_ids": [
+        "1750914b79e6d92b",
+        "68b36e6f9cfffe9b",
+        "2cfb82c303091925"
+      ],
+      "top_ids": [
+        "996b9b5ca3b7f34c",
+        "1750914b79e6d92b",
+        "2cfb82c303091925",
+        "cba317693a4a0140",
+        "1b62556bb6566a41",
+        "514f11e036690d05",
+        "68b36e6f9cfffe9b",
+        "3524573df246d077",
+        "70fd4e43dad621b4",
+        "816784dcf6e82360"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.5307212739772434,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6871475159848289,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000073,
+      "gold_chunk_ids": [
+        "daa4afe2fd4be74b",
+        "f0c932e333cfc2c0",
+        "27de524cb2fbef81"
+      ],
+      "top_ids": [
+        "daa4afe2fd4be74b",
+        "1e86bd6d2c6cd3e6",
+        "a986ab0b2a29dbf5",
+        "7258c50563a90b64",
+        "174c6952ed478b46",
+        "bfc9648476a4e95a",
+        "97a6c854af094ea1",
+        "630e741dd9fcbb08",
+        "f0c932e333cfc2c0",
+        "a4134e68f7aa9a85"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6105456988825855,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000074,
+      "gold_chunk_ids": [
+        "e073ade81967f83f",
+        "20ddbc1be02c0665",
+        "4519226526655cec"
+      ],
+      "top_ids": [
+        "e073ade81967f83f",
+        "224604231313afb1",
+        "cb32eae8f06c9925",
+        "dd2bbb31fef90546",
+        "4519226526655cec",
+        "7c23d25c77d19c92",
+        "e6bac192cae75498",
+        "cf30cd4ce7c6699c",
+        "e8a212a05f7586b8",
+        "163f1ec984227de5"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6508205185601091,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6508205185601091,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000075,
+      "gold_chunk_ids": [
+        "6d872a139ff0f8c1",
+        "65b7ccbd4c92ed28",
+        "f5319e96f7b23d92"
+      ],
+      "top_ids": [
+        "6d872a139ff0f8c1",
+        "15650df4e7498a90",
+        "ce10accc2425ba71",
+        "0d980494cc5d86ab",
+        "15546c1aad520612",
+        "5d38e03697f0fa4e",
+        "0e4daf4adf6f1dfc",
+        "d3c405a78888a09c",
+        "0dbc90b49c41006f",
+        "41cfc83b80c540bc"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.46927872602275644,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000076,
+      "gold_chunk_ids": [
+        "5edf68c66e1e7f14",
+        "bfed5338ef8676cb",
+        "8e20d8a59542503b"
+      ],
+      "top_ids": [
+        "c0942dc43140dc2b",
+        "8e20d8a59542503b",
+        "05b3ff1a244ada72",
+        "17ea19a77b26bc4b",
+        "27d7526f64c3a86b",
+        "4e238db2d5807f8d",
+        "90be9d7e1d365deb",
+        "32c43a218083bd8b",
+        "bfbd2ee6f89b3e88",
+        "ead1d906c4193564"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.2960819109658652,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.2960819109658652,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000077,
+      "gold_chunk_ids": [
+        "089dc96b4e60bd6a",
+        "d1f785656be3f7e0",
+        "1e64cd2f7dc0a7b5"
+      ],
+      "top_ids": [
+        "d1f785656be3f7e0",
+        "089dc96b4e60bd6a",
+        "444d0d5856350bf2",
+        "1bcce16ba2df5fe8",
+        "9108297ef4df1447",
+        "87015ccde49fc283",
+        "8ae3c200ec4c84b7",
+        "f62c145b98c0b65e",
+        "5095f03d581f08c7",
+        "dfe950260a516fec"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.7653606369886217,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.7653606369886217,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000078,
+      "gold_chunk_ids": [
+        "57ca6d7113f6e024",
+        "df73631e4ca837a3",
+        "3faf2276f751f544"
+      ],
+      "top_ids": [
+        "df73631e4ca837a3",
+        "644349f0753ac5cb",
+        "9c3630afbd5fcc59",
+        "57ca6d7113f6e024",
+        "1d61b785bb5d6b5b",
+        "71aaf8673863e1ee",
+        "7a62f6eed802cfcd",
+        "ff0fd888a5aacff4",
+        "a11a931a84427db1",
+        "af4c9b8c9fd3ed78"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6713860725233041,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6713860725233041,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000079,
+      "gold_chunk_ids": [
+        "93d30b65a7e23b6a",
+        "4b328eaf4ffeac89",
+        "5eddfb1c7a808969"
+      ],
+      "top_ids": [
+        "4b328eaf4ffeac89",
+        "6039b04bf8c1b759",
+        "78e20924e670db2b",
+        "548c14ec80ea4512",
+        "c8895a0f89b640ef",
+        "68fa6553ac7b1be1",
+        "755e418f9b9357d2",
+        "e69d16256ccb6518",
+        "2aab674659832443",
+        "e75d3422230b6ecf"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.46927872602275644,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000080,
+      "gold_chunk_ids": [
+        "fe689f70bc253c1c",
+        "28486459fc420c9c",
+        "86e43e07f246763f"
+      ],
+      "top_ids": [
+        "28486459fc420c9c",
+        "b46a115c0c66f54a",
+        "72d2ace0b3e0a446",
+        "b994d5992964ada0",
+        "fe689f70bc253c1c",
+        "966bf2a25e23f69d",
+        "86e43e07f246763f",
+        "88312f1ba89185b2",
+        "6ff7d1771d606a4a",
+        "341fce4e915691c0"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6508205185601091,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.8072467605676945,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000081,
+      "gold_chunk_ids": [
+        "d2157c32cd264c93",
+        "6103dd5cb75eebf5",
+        "a698a67d7f63f784"
+      ],
+      "top_ids": [
+        "2b974144eeb51026",
+        "d2157c32cd264c93",
+        "17c054b146fa534b",
+        "e5f435c874a31c21",
+        "6103dd5cb75eebf5",
+        "8b61b763ba79b601",
+        "341392a5ecb13c89",
+        "aaf5a907b2946577",
+        "a698a67d7f63f784",
+        "88ef33103df293d9"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.4776237035032179,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.618890676363047,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000082,
+      "gold_chunk_ids": [
+        "14528adbc3e55b5d",
+        "c08c1e31e1c35124",
+        "5c444f8fe86403d2"
+      ],
+      "top_ids": [
+        "14528adbc3e55b5d",
+        "2b671184a3b96889",
+        "bc140d6b43ab0481",
+        "87e01c987178e86f",
+        "27bd395fc84735d5",
+        "74ed8bd800542864",
+        "931bb145d1081dc2",
+        "2604a7630fe55748",
+        "5c444f8fe86403d2",
+        "bc215dfa74c94595"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6105456988825855,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000083,
+      "gold_chunk_ids": [
+        "58af2c89964df300",
+        "5ef865af8c0dadca",
+        "26143b7b00528ccf"
+      ],
+      "top_ids": [
+        "b57690d08ffff800",
+        "82404ae93713fe57",
+        "47fd97dbd64cfe34",
+        "ffa42743d27ce9ce",
+        "58af2c89964df300",
+        "5ef865af8c0dadca",
+        "1389dcb92bfe7ee7",
+        "26143b7b00528ccf",
+        "e48cbb348fa0bd61",
+        "499e2c6d5c0db620"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.18154179253735267,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.4967432029864876,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000084,
+      "gold_chunk_ids": [
+        "3c373ce0dac3d6e2",
+        "cea29aed6efff844",
+        "49b3c5a19f8663f2"
+      ],
+      "top_ids": [
+        "29d871a40e8c978b",
+        "49b3c5a19f8663f2",
+        "308f363bd27005eb",
+        "19a4ccce6580b07f",
+        "82c3edace7a7d6b3",
+        "3b94c0c38f6f6463",
+        "19ed96b83c9af604",
+        "b632d4f61ab15cec",
+        "67406eb4675397a3",
+        "67f714118bb08503"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.2960819109658652,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.2960819109658652,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000085,
+      "gold_chunk_ids": [
+        "d9d134335b061a5d",
+        "7fc065b17aff930e",
+        "c5732e375e20d2b2"
+      ],
+      "top_ids": [
+        "22e6d367ab95035c",
+        "0d980494cc5d86ab",
+        "388fc89d41fe2079",
+        "99e2efd5e46b2b7a",
+        "d0e005289f0e7f35",
+        "7b06018bff34131b",
+        "7fc065b17aff930e",
+        "a4357685354d78c7",
+        "c5732e375e20d2b2",
+        "2a8e3350db6d3c11"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.29769321486741446,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000086,
+      "gold_chunk_ids": [
+        "ee238ce6dfcb6664",
+        "ea07ac6d17a49755",
+        "9ab3b57b1b5013ab"
+      ],
+      "top_ids": [
+        "9ab3b57b1b5013ab",
+        "ea07ac6d17a49755",
+        "35dca876ebcefe5a",
+        "5e1ed28734988582",
+        "86294b71f64fbe99",
+        "cd799ee2bf039b65",
+        "226355dcbafbc322",
+        "f6a450b333d8c629",
+        "149eacb3499c49f0",
+        "4d183ae86335d5be"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.7653606369886217,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.7653606369886217,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000087,
+      "gold_chunk_ids": [
+        "6c83a8c41fbdf482",
+        "7c762e0f5aa6f8a2"
+      ],
+      "top_ids": [
+        "6c83a8c41fbdf482",
+        "7c762e0f5aa6f8a2",
+        "c15b1969b54847b0",
+        "0a0a0d9528830cfe",
+        "31e2ca619f66e888",
+        "50aeb94a51cf4df4",
+        "531f602bad46061c",
+        "82549298403c0da6",
+        "883d70e703ba6a83",
+        "f38e60db7336289d"
+      ],
+      "metrics": {
+        "recall@1": 0.5,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 1.0,
+        "hit@5": 1.0,
+        "ndcg@5": 1.0,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 1.0,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000088,
+      "gold_chunk_ids": [
+        "f645c98a0b8035a6",
+        "859192384f18ef67",
+        "0bf4f96ebc98d7fa"
+      ],
+      "top_ids": [
+        "0bf4f96ebc98d7fa",
+        "4b994288688ca485",
+        "ab4ce812d80b5b49",
+        "7d72009e49d2a5d6",
+        "f47a3b87874d7ab9",
+        "0f23489404ebc8a4",
+        "a5332ad0889e5a69",
+        "1d2dde087e265356",
+        "721e9dd656c8a295",
+        "4a37517621626ed4"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.46927872602275644,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000089,
+      "gold_chunk_ids": [
+        "fd154d02d9a12b32",
+        "e6f3b5d43f59871c",
+        "e1676d4343a224dd"
+      ],
+      "top_ids": [
+        "e6f3b5d43f59871c",
+        "21be41e241a30d9b",
+        "7854306e62eda2a4",
+        "46c9aca89c4f3024",
+        "9f12e8abf6c3b486",
+        "36442ec9dd4d2870",
+        "5004e0faedcc2f8c",
+        "0db962a679929ec5",
+        "e7b7ad728332e913",
+        "a5a5324689f234b7"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.46927872602275644,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000090,
+      "gold_chunk_ids": [
+        "80e73f91028e1819",
+        "8a0f36d9d030d932",
+        "1a9a01d2e9f589fd"
+      ],
+      "top_ids": [
+        "cbb36d7515824710",
+        "8a0f36d9d030d932",
+        "80e73f91028e1819",
+        "bc8b2314732ecb05",
+        "12efe24262368599",
+        "cec4f190a3d4aeb8",
+        "89ccb17e6e8836d4",
+        "1a9a01d2e9f589fd",
+        "4750c759c82bc46a",
+        "d1211042d6f11033"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.5307212739772434,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6787622294601761,
+        "mrr@3": 0.5
+      }
+    },
+    {
+      "qid": 1000091,
+      "gold_chunk_ids": [
+        "5074a4e344776176",
+        "0ca24f9eedc39a49",
+        "99df77240647ccd9"
+      ],
+      "top_ids": [
+        "99df77240647ccd9",
+        "a62f1eb61314513f",
+        "ae6b4654c2936113",
+        "0c272eb2569d1fe1",
+        "52337b3cd965eadb",
+        "d68efa8afddac56a",
+        "1127dcc22b3285b8",
+        "679bca971be76d3d",
+        "6f059e844a361a41",
+        "1dbd99013b2f345d"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.46927872602275644,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000092,
+      "gold_chunk_ids": [
+        "c3aeebaf295878a6",
+        "8433f2d0eeb4fbb8",
+        "bad98e46c09f9ae9"
+      ],
+      "top_ids": [
+        "bad98e46c09f9ae9",
+        "8433f2d0eeb4fbb8",
+        "46d2def4ca4290f1",
+        "d714cba964e72525",
+        "db0211680372f8e8",
+        "63f6efc79343e912",
+        "d278692980ad3e5e",
+        "7de086fd5f609f72",
+        "626ae9b79a6341ac",
+        "03b3bd47be2e83d7"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.7653606369886217,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.7653606369886217,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000093,
+      "gold_chunk_ids": [
+        "480cf9829325fbce",
+        "8565dcc34680945c",
+        "dcae05ef9dd70f4e"
+      ],
+      "top_ids": [
+        "dcae05ef9dd70f4e",
+        "cba317693a4a0140",
+        "ec88e86844f6d46a",
+        "480cf9829325fbce",
+        "4509c16325653a99",
+        "bbdb2a8c83777083",
+        "df821da25e50664e",
+        "a4f059e11553f24c",
+        "89ccb17e6e8836d4",
+        "ad003d5e697c694e"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6713860725233041,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6713860725233041,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000094,
+      "gold_chunk_ids": [
+        "4218ba75299cb9b0",
+        "2cd7d19a1c1048bf",
+        "51b860e4d3171fdb"
+      ],
+      "top_ids": [
+        "51b860e4d3171fdb",
+        "5aa1d0615d4a7f94",
+        "875576d6fd91c80c",
+        "5e81b0a65fcf60c4",
+        "44199fadee0a63d2",
+        "c6a41edfb0b1b2dd",
+        "2cd7d19a1c1048bf",
+        "6e16cfbaec2af336",
+        "4218ba75299cb9b0",
+        "9c1cc6b9cd45fe5b"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.7669719408901708,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000095,
+      "gold_chunk_ids": [
+        "b01ac1d36cfc03d2",
+        "5d9980cad952c13d",
+        "58d42d4ea7f31de7"
+      ],
+      "top_ids": [
+        "5d9980cad952c13d",
+        "58d42d4ea7f31de7",
+        "2e5f499394b46e96",
+        "4678897e171bade0",
+        "1d7f945ca5a60c93",
+        "b01ac1d36cfc03d2",
+        "644349f0753ac5cb",
+        "651b92e1fb351058",
+        "f1584bb54c28098c",
+        "27d5544451321e15"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.7653606369886217,
+        "recall@10": 1.0,
+        "hit@10": 1.0,
+        "ndcg@10": 0.9325210919548239,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000096,
+      "gold_chunk_ids": [
+        "0b20c36faf5b3766",
+        "f75be31ca69d8a98",
+        "6523207b34b406cd"
+      ],
+      "top_ids": [
+        "6523207b34b406cd",
+        "78ef8aacbd77de57",
+        "755e418f9b9357d2",
+        "b61e0a1e1c5a6ed2",
+        "75790d3e21daf42a",
+        "afa9eac8e58fb0a0",
+        "e2177ca583ab520a",
+        "438482dfe875a825",
+        "7ce977d223d421da",
+        "f305034ba26899a7"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.3333333333333333,
+        "hit@5": 1.0,
+        "ndcg@5": 0.46927872602275644,
+        "recall@10": 0.3333333333333333,
+        "hit@10": 1.0,
+        "ndcg@10": 0.46927872602275644,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000097,
+      "gold_chunk_ids": [
+        "eb84c91d01ddc5c9",
+        "b19d5c67dc685789",
+        "96c071cd08c2eb29"
+      ],
+      "top_ids": [
+        "eb84c91d01ddc5c9",
+        "a4c0c9d142cfb494",
+        "96c071cd08c2eb29",
+        "8156a993bca5d7aa",
+        "011629bc308f2dd1",
+        "8150b9276d9c6ac9",
+        "0dd56d812d8ca176",
+        "ec742136599816b5",
+        "148d3028bc0ac73b",
+        "e2f25c1dc120bb51"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.7039180890341347,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.7039180890341347,
+        "mrr@3": 1.0
+      }
+    },
+    {
+      "qid": 1000098,
+      "gold_chunk_ids": [
+        "c324bfbfed6ad208",
+        "2e4315d4fba0f1e0",
+        "c1819b8ba108329f"
+      ],
+      "top_ids": [
+        "0deef81d46b9e73d",
+        "56823759e6322299",
+        "cc40ae10efaef2f0",
+        "2272a2af7cf3e35d",
+        "91fabe17fd0a04b2",
+        "fe106fb0bdc1761f",
+        "374708d1b80b2d89",
+        "78b3290b999fe36c",
+        "b7671ff216b4cda5",
+        "2d48eeecad6f0dad"
+      ],
+      "metrics": {
+        "recall@1": 0.0,
+        "hit@1": 0.0,
+        "ndcg@1": 0.0,
+        "recall@5": 0.0,
+        "hit@5": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0,
+        "hit@10": 0.0,
+        "ndcg@10": 0.0,
+        "mrr@3": 0.0
+      }
+    },
+    {
+      "qid": 1000099,
+      "gold_chunk_ids": [
+        "c045f06ae2548593",
+        "c6e4ec5fd35f78d1",
+        "869a93eccffd01f3"
+      ],
+      "top_ids": [
+        "c045f06ae2548593",
+        "12d1a8d8749e87b6",
+        "dc8ed6df93b6916d",
+        "c6e4ec5fd35f78d1",
+        "341e209df718f927",
+        "a0e07b76446c55b4",
+        "b779ba521c117fbb",
+        "be29cd732b153816",
+        "fd5e365ad3485a54",
+        "0618f1801ea85493"
+      ],
+      "metrics": {
+        "recall@1": 0.3333333333333333,
+        "hit@1": 1.0,
+        "ndcg@1": 1.0,
+        "recall@5": 0.6666666666666666,
+        "hit@5": 1.0,
+        "ndcg@5": 0.6713860725233041,
+        "recall@10": 0.6666666666666666,
+        "hit@10": 1.0,
+        "ndcg@10": 0.6713860725233041,
+        "mrr@3": 1.0
+      }
+    }
+  ]
+}
