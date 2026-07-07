@@ -1,3 +1,42 @@
+# Layer 4 ablation — dense vs hybrid vs hybrid+rerank
+
+> **Verdict (D-030/D-031): ship HYBRID.** Reranking is a measured *negative* on this
+> corpus and is rejected. On the real forum slice, plain dense still wins — the
+> hybrid/overall gain is carried by synthetic questions (lexical bias); disclosed caveat.
+
+## Three-way summary (n=126)
+
+| Metric    | Dense | Hybrid | Rerank (MiniLM) | best     |
+|-----------|-------|--------|-----------------|----------|
+| recall@1  | 0.312 | 0.403  | 0.407           | rerank≈hybrid |
+| recall@5  | 0.612 | **0.693** | 0.638        | **hybrid** |
+| recall@10 | 0.734 | **0.778** | 0.698        | **hybrid** |
+| mrr@3     | 0.511 | 0.614  | **0.616**       | rerank≈hybrid |
+| ndcg@10   | 0.546 | **0.633** | 0.595        | **hybrid** |
+| hit@5     | 0.738 | **0.802** | 0.754        | **hybrid** |
+| latency p50 (ms) | 474 | 523 | 7306 (14×)   | dense    |
+
+**Reranking (MiniLM):** helps rank-1 by a hair, degrades recall@5/@10/ndcg/hit, and
+costs 14× latency. bge-reranker-base (possibly better ranking) measured ~25 s/query on
+CPU — undeployable on free tier. Rejected (D-030). Real-slice numbers below are worse
+still under rerank.
+
+## The real-vs-synthetic split (why "hybrid wins" needs a caveat)
+
+| recall@5  | Dense | Hybrid | Rerank |
+|-----------|-------|--------|--------|
+| **forum / real (n=26)** | **0.577** | 0.404 | 0.327 |
+| synthetic (n=100)       | 0.622 | **0.768** | 0.718 |
+
+On the **real** slice the order is **dense > hybrid > rerank** — the opposite of the
+overall metric. The overall hybrid gain is entirely synthetic-driven; synthetic
+questions were generated *from* their gold chunks so they share vocabulary BM25 rewards
+(D-025/D-028). Honest reading: hybrid wins corpus-wide, but the small real slice favors
+dense. Default = hybrid (standard, entity-robust); the real-slice weakness is left to
+the Layer 5 agent (query decomposition / multi-query), not a reranker (D-031).
+
+---
+
 # Layer 4a ablation — dense-only vs hybrid (dense + BM25, client-side RRF k=60)
 
 Same gold set (126 items: 26 real forum + 100 synthetic), same metrics, same Qdrant

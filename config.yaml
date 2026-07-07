@@ -4,7 +4,7 @@
 
 # --- Model ids (verify live free-tier limits per PROJECT_PLAN §7 before relying on them) ---
 embedding_model: BAAI/bge-small-en-v1.5   # 384-dim default; benchmark vs bge-base (D-005)
-reranker_model: BAAI/bge-reranker-base    # cross-encoder, CPU (D-007)
+reranker_model: cross-encoder/ms-marco-MiniLM-L-6-v2  # cross-encoder, CPU; MiniLM for free-tier latency (D-030)
 synthesis_model: gemini-flash             # final answer synthesis (verify exact id in AI Studio)
 cheap_model: groq/llama-3.1-8b-instant    # decompose/grade/rewrite + RAGAS judge (D-008)
 

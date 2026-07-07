@@ -97,7 +97,7 @@ class Settings(BaseSettings):
 
     # --- Tunables (defaults mirror config.yaml; config.yaml overrides at load) ---
     embedding_model: str = "BAAI/bge-small-en-v1.5"
-    reranker_model: str = "BAAI/bge-reranker-base"
+    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"  # MiniLM for CPU latency (D-030)
     synthesis_model: str = "gemini-flash"
     cheap_model: str = "groq/llama-3.1-8b-instant"
     sparse_model: str = "Qdrant/bm25"  # fastembed BM25 for hybrid (Layer 4a, D-026)

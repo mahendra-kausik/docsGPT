@@ -19,6 +19,7 @@ from src.config import get_settings
 from src.retrieval.embedder import Embedder
 from src.retrieval.fusion import rrf_fuse
 from src.retrieval.index import get_client
+from src.retrieval.rerank import Reranker, apply_rerank
 from src.retrieval.sparse import SparseEmbedder
 
 logger = logging.getLogger(__name__)
@@ -119,15 +120,53 @@ class HybridRetriever:
         return hits, elapsed_ms
 
 
+class RerankRetriever:
+    """Hybrid retrieval + cross-encoder reranking (Layer 4b, D-007/D-029).
+
+    Retrieves a DEEP fused pool (retrieve_top_k candidates) so correct-but-demoted
+    chunks are present (the fix for the D-028 regression), then a cross-encoder
+    rescores the pool and the top_k are returned. Same Hit shape as the other
+    retrievers, so the eval harness is retriever-agnostic; hit.score becomes the
+    cross-encoder score.
+    """
+
+    def __init__(self) -> None:
+        self.s = get_settings()
+        self.hybrid = HybridRetriever()
+        self.reranker = Reranker()
+
+    def search(self, query: str, top_k: int | None = None) -> tuple[list[Hit], float]:
+        """Return (hits, latency_ms) for hybrid-retrieve → cross-encoder rerank."""
+        top_k = top_k or self.s.rerank_top_n
+        t0 = time.perf_counter()
+        # Deep candidate pool: the cross-encoder can only rescue a chunk that survived
+        # fusion into the pool, so pool depth (retrieve_top_k) >> the returned top_k.
+        pool, _ = self.hybrid.search(query, top_k=self.s.retrieve_top_k)
+        scores = self.reranker.score(query, [h.text for h in pool])
+        hits = apply_rerank(pool, scores, top_k)
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        logger.info(
+            "rerank_search q=%r pool=%d -> top %d in %.1f ms",
+            query[:60], len(pool), len(hits), elapsed_ms,
+        )
+        return hits, elapsed_ms
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Search over the deployed Qdrant corpus.")
     ap.add_argument("query", nargs="+", help="the search query")
     ap.add_argument("-k", "--top-k", type=int, default=5, help="how many hits to show")
     ap.add_argument("--hybrid", action="store_true", help="use hybrid (dense+BM25 RRF) retrieval")
+    ap.add_argument("--rerank", action="store_true", help="hybrid + cross-encoder rerank")
     args = ap.parse_args()
 
     query = " ".join(args.query)
-    retriever = HybridRetriever() if args.hybrid else DenseRetriever()
+    if args.rerank:
+        retriever = RerankRetriever()
+    elif args.hybrid:
+        retriever = HybridRetriever()
+    else:
+        retriever = DenseRetriever()
     hits, elapsed_ms = retriever.search(query, top_k=args.top_k)
     print(f'\nQuery: {query!r}')
     print(f"Returned {len(hits)} hits in {elapsed_ms:.1f} ms\n")

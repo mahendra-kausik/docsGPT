@@ -22,7 +22,7 @@ from pathlib import Path
 from src.config import PROJECT_ROOT, get_settings
 from src.eval import metrics as M
 from src.eval.gold import load_gold
-from src.retrieval.search import DenseRetriever, HybridRetriever
+from src.retrieval.search import DenseRetriever, HybridRetriever, RerankRetriever
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 _PIPELINES = {
     "dense": (DenseRetriever, "dense-only"),
     "hybrid": (HybridRetriever, "hybrid-rrf"),
+    "rerank": (RerankRetriever, "hybrid-rerank"),
 }
 
 
@@ -120,19 +121,22 @@ def run_eval(
         idx = min(len(latencies_sorted) - 1, int(round(p * (len(latencies_sorted) - 1))))
         return round(latencies_sorted[idx], 1)
 
-    is_hybrid = pipeline == "hybrid"
+    uses_sparse = pipeline in ("hybrid", "rerank")
     config = {
         "embedding_model": s.embedding_model,
         "query_instruction": s.query_instruction,
-        "qdrant_collection": s.qdrant_hybrid_collection if is_hybrid else s.qdrant_collection,
+        "qdrant_collection": s.qdrant_hybrid_collection if uses_sparse else s.qdrant_collection,
         "vector_distance": s.vector_distance,
         "retrieve_top_k": k,
         "ks": list(M.DEFAULT_KS),
         "mrr_k": M.MRR_K,
     }
-    if is_hybrid:  # record the sparse half + the RRF constant that produced these numbers
+    if uses_sparse:  # record the sparse half + the RRF constant that produced these numbers
         config["sparse_model"] = s.sparse_model
         config["rrf_k"] = s.rrf_k
+    if pipeline == "rerank":  # record the reranker + the fused pool depth it rescored
+        config["reranker_model"] = s.reranker_model
+        config["rerank_pool"] = s.retrieve_top_k
 
     return {
         "run": {
