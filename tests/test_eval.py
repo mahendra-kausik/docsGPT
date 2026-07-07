@@ -14,7 +14,7 @@ from src.eval.gold import UNANSWERABLE, VERIFIED, ForumSeed, GoldItem, html_to_t
 from src.eval.prefill import answer_link_matches, apply_prefill, normalize_docs_url
 from src.eval.propose import Candidate, Proposal
 from src.eval.synth import _clean_question
-from src.llm.gateway import _strip_provider
+from src.llm.gateway import _split_provider
 
 RANKED = ["a", "b", "c", "d", "e"]  # retriever output, best-first
 
@@ -194,9 +194,10 @@ def test_apply_prefill_fills_blank_and_is_idempotent():
 # --- D-025: synthetic generation + merge ---
 
 
-def test_strip_provider():
-    assert _strip_provider("groq/llama-3.1-8b-instant") == "llama-3.1-8b-instant"
-    assert _strip_provider("llama-3.1-8b-instant") == "llama-3.1-8b-instant"
+def test_split_provider():
+    assert _split_provider("groq/llama-3.1-8b-instant") == ("groq", "llama-3.1-8b-instant")
+    assert _split_provider("gemini/gemini-2.5-flash") == ("gemini", "gemini-2.5-flash")
+    assert _split_provider("llama-3.1-8b-instant") == ("groq", "llama-3.1-8b-instant")
 
 
 def test_clean_question_accepts_good_and_rejects_bad():

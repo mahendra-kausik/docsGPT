@@ -119,6 +119,38 @@
 
 <!-- New decisions appended below by Claude Code as the build proceeds -->
 
+## D-033 — Gemini synthesis via a provider-aware LLM gateway (google-genai); pydantic bumped
+- **Date / Layer:** Layer 5a (2026-07-07). Implements the Gemini half of D-008.
+- **Context:** The gateway (`src/llm/gateway.py`) was Groq-only; D-008 routes final synthesis to Gemini Flash. `synthesis_model` was the invalid id `gemini-flash`. Needed one call surface (CLAUDE.md §4) covering both providers with shared backoff + cache.
+- **Decision:** Make `LLMGateway` **provider-aware via the model-id prefix** (`groq/…` vs `gemini/…` → `_split_provider`); both providers share the cache + backoff loop, with provider-specific `_call_once` and `_is_retryable`. Gemini uses the **current `google-genai` SDK** (not deprecated `google-generativeai`), model **`gemini-2.5-flash`**, with **`thinking_budget=0`** for synthesis (deterministic, cheaper, avoids empty replies when thinking tokens eat the output budget). Cache key stays the stripped model name so Groq/Gemini never collide and the existing Groq cache stays valid. Retryable = 5xx + 429/conn/timeout only (never 4xx bad-requests). Pins: `langgraph==1.2.8`, `google-genai==2.10.0`, and **pydantic 2.9.2→2.13.4** (forced by langgraph/langchain-core/google-genai; all tests + config/models verified green).
+- **Why:** One wrapper keeps routing/backoff/cache in a single defensible place; prefix-based provider selection makes routing a config change (`synthesis_model` vs `cheap_model`), not code. thinking_budget=0 matches a docs-synthesis task that needs no chain-of-thought and keeps runs reproducible.
+- **Alternatives considered:** a separate `GeminiGateway` class (duplicates cache/backoff — two code paths to keep in sync); the old `google-generativeai` SDK (deprecated, being sunset); leaving thinking on (nondeterministic + occasional empty outputs + slower/costlier for no quality gain here); pinning pydantic at 2.9.2 (would fight the whole langgraph/genai stack — not worth it, and 2.13.4 passed all tests).
+- **Tradeoffs / risks:** ⚠️ Gemini free-tier model ids/limits shift (§7) — `gemini-2.5-flash` verified live 2026-07-07; re-check in AI Studio. pydantic 2.13 with pydantic-settings 2.5.2 works today but is an untested-by-upstream pairing — watch at the next dep bump. Free tier may train on inputs (public docs only — acceptable).
+
+## D-034 — Citation mechanism: numbered inline [n] markers + pure resolve-validation
+- **Date / Layer:** Layer 5a (2026-07-07).
+- **Context:** PLAN §2/§5 wants per-claim citations. Needed an output contract for 5a that is readable, demoable, and cheaply validatable, deferring the deeper "is the claim actually supported" check to 5c.
+- **Decision:** Retrieved chunks are numbered `[1..k]` in the prompt; the model cites claims with inline `[n]` markers. A **pure, unit-tested** parser (`src/agent/citations.py`) resolves every marker to its chunk (id + URL + heading) and **surfaces out-of-range markers as `invalid_citations`** (hallucinated citations) rather than dropping them silently. `agent_context_k=8` chunks retrieved via the **hybrid** retriever (D-031).
+- **Why:** Inline `[n]` produces natural readable answers and a trivial, LLM-free resolve check ("every citation points at a real retrieved chunk"); keeping invalid markers visible lets 5c react. Structured per-claim JSON was rejected as more brittle/verbose for no 5a benefit.
+- **Alternatives considered:** structured `{claim, source_ids}` JSON (brittle, ugly to render — revisit only if 5c needs claim-level spans); post-hoc sentence→chunk attribution (a second LLM pass — 5c territory).
+- **Tradeoffs / risks:** **Resolving ≠ grounded.** A citation can resolve to a valid chunk that does not actually support the claim (see D-036) — 5a validates *resolution* only; *faithfulness* is 5c. Marker regex requires digits-only inside brackets so prose/`[binary omitted]`/markdown labels are never misread.
+
+## D-035 — LangGraph from 5a even though the flow is linear
+- **Date / Layer:** Layer 5a (2026-07-07). Implements D-009.
+- **Context:** 5a's flow (retrieve→synthesize→cite) is linear; a plain function would do. But 5b/5c add cycles (grade→rewrite, verify→retry).
+- **Decision:** Build 5a as a LangGraph `StateGraph` now (`AgentState` TypedDict; injectable retriever + gateway for offline testing) so 5b/5c add nodes/edges without a rewrite, and every node becomes a Langfuse span at Layer 7.
+- **Why:** Pay the small structure cost once; avoid a rewrite when the loop lands. Dependency injection keeps the graph unit-testable with fakes (no live cluster/LLM in tests).
+- **Alternatives considered:** plain functions now, convert later (throwaway work + a risky refactor exactly when the logic gets complex); custom loop (loses the Langfuse-trace story, D-009).
+- **Tradeoffs / risks:** LangGraph resolves `AgentState` hints at runtime via `get_type_hints`, so state field types (`Hit`, `Citation`) must be importable at runtime (not under `TYPE_CHECKING`) — done.
+
+## D-036 — 5a limitation (measured): prompt-only grounding fails on strong priors → motivates 5b/5c
+- **Date / Layer:** Layer 5a (2026-07-07).
+- **Context:** Gate testing found a faithfulness failure: for "what is the capital of France?" the agent answers **"Paris [1,2,3,4,5,6,7,8]"** — outside knowledge, with valid-but-irrelevant citations on all 8 (LangChain retriever) chunks. Hardening the system prompt (explicit "never use outside knowledge; refuse unrelated questions") did **not** fix it; enabling Gemini thinking (budget 0 vs 512) did **not** fix it either.
+- **Decision:** Accept this as a **documented 5a limitation, not a 5a bug**: 5a's contract is retrieve→synthesize→*resolve* citations, and the gate (real docs questions produce good, fully-resolved cited answers) passes. Robust faithfulness is deferred to **5b** (relevance grading → refuse when no retrieved chunk is relevant) and **5c** (per-claim grounding verification → force refusal/retry when a claim is unsupported by its cited chunk). The France case is the concrete motivating example for both.
+- **Why:** Measured evidence that prompt-only grounding is insufficient — the synthesis model cannot be trusted to police its own faithfulness against a strong parametric prior, which is precisely why the plan (PLAN §2) separates grading and grounding-verification into their own nodes. Shipping 5a with this honestly documented is correct layered engineering; hacking a half-grounding-check into 5a would be 5c scope creep done badly.
+- **Alternatives considered:** retrieval-score threshold to refuse (RRF scores uncalibrated — brittle); a Groq relevance pre-grade in 5a (that IS 5b's grading node — build it there, properly); block-shipping 5a until grounded (violates the Prime Directive's one-sub-part rule and conflates three layers).
+- **Tradeoffs / risks:** 5a can confidently hallucinate on out-of-domain/adversarial inputs until 5b/5c land — disclosed here and in PROGRESS; the demo/README must not show 5a in isolation as "grounded." Realistic in-domain docs questions behave well (verified).
+
 ## D-029 — Layer 4b reranker: bge-reranker-base cross-encoder over a DEEP fused pool
 - **Date / Layer:** Layer 4b (2026-07-07).
 - **Context:** Realizes D-007 (cross-encoder rerank). The Layer 4a k-sweep (D-028 follow-up) proved the hybrid real-slice regression is not fixable by fusion weighting — correct dense chunks fall out of the shallow fused top-10, and no k can rank an absent chunk. The reranker is the intended fix; two sub-choices: what it reranks, and which model.

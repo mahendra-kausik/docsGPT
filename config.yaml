@@ -5,8 +5,11 @@
 # --- Model ids (verify live free-tier limits per PROJECT_PLAN §7 before relying on them) ---
 embedding_model: BAAI/bge-small-en-v1.5   # 384-dim default; benchmark vs bge-base (D-005)
 reranker_model: cross-encoder/ms-marco-MiniLM-L-6-v2  # cross-encoder, CPU; MiniLM for free-tier latency (D-030)
-synthesis_model: gemini-flash             # final answer synthesis (verify exact id in AI Studio)
+synthesis_model: gemini/gemini-2.5-flash  # final answer synthesis; provider-prefixed (D-008/D-033)
 cheap_model: groq/llama-3.1-8b-instant    # decompose/grade/rewrite + RAGAS judge (D-008)
+
+# --- Agent (Layer 5a: cited-answer graph) ---
+agent_context_k: 8    # chunks retrieved (hybrid) and passed to synthesis as [1..k] (D-034)
 
 # --- Retrieval / fusion ---
 sparse_model: Qdrant/bm25   # fastembed BM25 sparse embeddings for hybrid (D-026)

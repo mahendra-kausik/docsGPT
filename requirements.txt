@@ -3,7 +3,9 @@
 # ragas, fastapi, ...) are added in the layer that first needs them (DECISIONS D-015).
 
 # --- Runtime ---
-pydantic==2.9.2
+# pydantic bumped 2.9.2 -> 2.13.4 at Layer 5a: langgraph/langchain-core/google-genai
+# require modern pydantic 2.x; verified all tests green + config/models load (D-033).
+pydantic==2.13.4
 pydantic-settings==2.5.2
 pyyaml==6.0.2
 python-dotenv==1.0.1
@@ -26,6 +28,12 @@ fastembed==0.8.0
 # Groq official SDK (OpenAI-compatible); routes cheap/high-volume calls to
 # llama-3.1-8b-instant on the free tier (D-008/D-020). Backoff + cache in src/llm.
 groq==1.5.0
+
+# --- Agent (Layer 5a: LangGraph cited-answer graph + Gemini synthesis, D-008/D-033) ---
+# langgraph pulls langchain-core (pure-python). google-genai = current unified Gemini
+# SDK (supersedes google-generativeai). Synthesis routes to gemini-2.5-flash (D-033).
+langgraph==1.2.8
+google-genai==2.10.0
 
 # --- Dev / tooling ---
 pytest==8.3.3

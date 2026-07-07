@@ -98,8 +98,9 @@ class Settings(BaseSettings):
     # --- Tunables (defaults mirror config.yaml; config.yaml overrides at load) ---
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"  # MiniLM for CPU latency (D-030)
-    synthesis_model: str = "gemini-flash"
+    synthesis_model: str = "gemini/gemini-2.5-flash"  # provider-prefixed (D-033)
     cheap_model: str = "groq/llama-3.1-8b-instant"
+    agent_context_k: int = 8  # chunks retrieved + cited by the agent (Layer 5a, D-034)
     sparse_model: str = "Qdrant/bm25"  # fastembed BM25 for hybrid (Layer 4a, D-026)
     rrf_k: int = 60                     # client-side RRF constant, tunable (D-027)
     retrieve_top_k: int = 50

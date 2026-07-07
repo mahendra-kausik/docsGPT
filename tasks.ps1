@@ -38,6 +38,7 @@ switch ($task) {
     "index"  { Assert-Venv; & $py -m src.retrieval.index @args }
     "index-hybrid" { Assert-Venv; & $py -m src.retrieval.hybrid_index @args }
     "search" { Assert-Venv; & $py -m src.retrieval.search @args }
+    "ask"    { Assert-Venv; & $py -m src.agent.ask @args }
     "propose"      { Assert-Venv; & $py -m src.eval.propose @args }
     "prefill"      { Assert-Venv; & $py -m src.eval.prefill @args }
     "synth"        { Assert-Venv; & $py -m src.eval.synth @args }
@@ -46,9 +47,9 @@ switch ($task) {
     "eval"         { Assert-Venv; & $py -m src.eval.run_eval @args }
     "sweep-rrf"    { Assert-Venv; & $py -m src.eval.sweep_rrf @args }
     "bakeoff"      { Assert-Venv; & $py -m src.eval.rerank_bakeoff @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help" }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help"
         exit 1
     }
 }
