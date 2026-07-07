@@ -37,11 +37,22 @@ Source: `results/rerank_bakeoff_latest.json`.
 | jina-reranker-v2-multiling | 0.570 | 0.365 | 0.792 | **0.487** | **0.545** | 13,816 |
 
 **No reranker beats hybrid on recall@5 or the real slice** — including the "strong"
-bge (worst on the real slice *and* slowest, ~13 s/query at pool 25). Every model keeps
-synthetic flat (~0.83) but drops the real forum slice: cross-encoders trained on
-NL-query→prose relevance are out-of-domain for code-heavy doc chunks, so none judge
-relevance better than the hybrid signal. jina-v2 alone edges mrr@3/ndcg but loses
-recall@5 at ~14 s/query. **Reranking rejected on quality, not just latency (D-032).**
+bge (worst on the real slice *and* slowest, ~13 s/query at pool 25). But the split by
+slice is the real story (out-of-domain hypothesis, confirmed):
+
+- **Synthetic slice: rerankers HELP top-rank precision.** recall@5/@10 stay flat (gold
+  already in the pool → reordering can't add recall), but recall@1 / mrr@3 / ndcg@10
+  improve — jina-v2 lifts synth recall@1 0.583→**0.750**, ndcg 0.723→0.789; bge and
+  MiniLM-L12 also help. Only weak MiniLM-L6 hurts. Here the query is lexically/
+  semantically close to its gold passage — in-domain for the cross-encoder.
+- **Real forum slice: rerankers HURT every metric.** Natural questions vs code-heavy
+  chunks are out-of-distribution for cross-encoders trained on NL-query→prose, so they
+  demote correct answers.
+
+So it is not "rerankers are useless" — they sharpen the easy/in-domain questions and
+damage the hard/real ones, and the real ones are what we ship for. Net recall@5 and the
+real slice both favor hybrid; jina-v2 edges mrr@3/ndcg overall but loses recall@5 at
+~14 s/query. **Reranking rejected on quality, not just latency (D-032).**
 
 ## The real-vs-synthetic split (why "hybrid wins" needs a caveat)
 
