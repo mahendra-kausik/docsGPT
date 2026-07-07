@@ -47,7 +47,9 @@ class Reranker:
     def __init__(self, model_id: str | None = None, max_chars: int | None = None) -> None:
         s = get_settings()
         self.model_id = model_id or s.reranker_model
-        self.max_chars = max_chars or s.embed_max_chars
+        # Cap passages shorter than the embed cap: cross-encoders truncate at ~512
+        # tokens anyway, and shorter inputs bound CPU forward-pass cost (D-032).
+        self.max_chars = max_chars or s.rerank_max_chars
 
     @property
     def model(self):

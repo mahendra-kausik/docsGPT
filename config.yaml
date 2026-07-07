@@ -13,6 +13,7 @@ sparse_model: Qdrant/bm25   # fastembed BM25 sparse embeddings for hybrid (D-026
 rrf_k: 60             # RRF constant: score(d) = sum 1/(k + rank_i(d)); tunable, client-side (D-027)
 retrieve_top_k: 50    # candidates fetched before reranking
 rerank_top_n: 6       # candidates kept after cross-encoder rerank (D-007)
+rerank_max_chars: 1200  # cap passage length fed to the cross-encoder (bounds CPU cost; D-032)
 
 # --- Indexing (Layer 2: dense baseline into Qdrant Cloud, D-021/D-022) ---
 qdrant_collection: docs_dense       # dense-only collection (Layer 2 baseline)

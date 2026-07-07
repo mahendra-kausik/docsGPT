@@ -104,6 +104,7 @@ class Settings(BaseSettings):
     rrf_k: int = 60                     # client-side RRF constant, tunable (D-027)
     retrieve_top_k: int = 50
     rerank_top_n: int = 6
+    rerank_max_chars: int = 1200        # cap passage length for the cross-encoder (D-032)
     # --- Indexing (Layer 2: dense baseline, D-021/D-022) ---
     qdrant_collection: str = "docs_dense"
     qdrant_hybrid_collection: str = "docs_hybrid"  # dense+sparse named vectors (D-026)

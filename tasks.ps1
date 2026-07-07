@@ -45,9 +45,10 @@ switch ($task) {
     "build-gold"   { Assert-Venv; & $py -m src.eval.build_gold @args }
     "eval"         { Assert-Venv; & $py -m src.eval.run_eval @args }
     "sweep-rrf"    { Assert-Venv; & $py -m src.eval.sweep_rrf @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | help" }
+    "bakeoff"      { Assert-Venv; & $py -m src.eval.rerank_bakeoff @args }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help"
         exit 1
     }
 }

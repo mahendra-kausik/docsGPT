@@ -21,6 +21,28 @@ costs 14× latency. bge-reranker-base (possibly better ranking) measured ~25 s/q
 CPU — undeployable on free tier. Rejected (D-030). Real-slice numbers below are worse
 still under rerank.
 
+## Reranker bake-off — does ANY reranker beat hybrid? (Layer 4c, D-032)
+
+ONNX rerankers (fastembed `TextCrossEncoder`) over the hybrid pool. Set: all 26 real
+forum + 24 synthetic (n=50), pool 25, passages capped at `rerank_max_chars`. Latency is
+rerank-only, local CPU fp32 — and it *is* the online per-query cost (batch = cost × N).
+Source: `results/rerank_bakeoff_latest.json`.
+
+| model | recall@5 | **forum (real)** | synth | mrr@3 | ndcg@10 | p50 (ms) |
+|-------|----------|------------------|-------|-------|---------|----------|
+| **hybrid (no rerank)** | **0.630** | **0.442** | 0.833 | 0.463 | 0.543 | **0** |
+| ms-marco-MiniLM-L-6  | 0.550 | 0.288 | 0.833 | 0.410 | 0.485 | 2,816 |
+| ms-marco-MiniLM-L-12 | 0.600 | 0.385 | 0.833 | 0.430 | 0.493 | 4,442 |
+| BAAI/bge-reranker-base | 0.550 | 0.288 | 0.833 | 0.433 | 0.504 | 13,246 |
+| jina-reranker-v2-multiling | 0.570 | 0.365 | 0.792 | **0.487** | **0.545** | 13,816 |
+
+**No reranker beats hybrid on recall@5 or the real slice** — including the "strong"
+bge (worst on the real slice *and* slowest, ~13 s/query at pool 25). Every model keeps
+synthetic flat (~0.83) but drops the real forum slice: cross-encoders trained on
+NL-query→prose relevance are out-of-domain for code-heavy doc chunks, so none judge
+relevance better than the hybrid signal. jina-v2 alone edges mrr@3/ndcg but loses
+recall@5 at ~14 s/query. **Reranking rejected on quality, not just latency (D-032).**
+
 ## The real-vs-synthetic split (why "hybrid wins" needs a caveat)
 
 | recall@5  | Dense | Hybrid | Rerank |
