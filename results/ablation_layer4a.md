@@ -1,8 +1,23 @@
-# Layer 4 ablation — dense vs hybrid vs hybrid+rerank
+# Retrieval ablations — dense vs hybrid vs rerank vs decomposition
 
-> **Verdict (D-030/D-031): ship HYBRID.** Reranking is a measured *negative* on this
-> corpus and is rejected. On the real forum slice, plain dense still wins — the
-> hybrid/overall gain is carried by synthetic questions (lexical bias); disclosed caveat.
+> **Default: HYBRID** (dense + BM25 + client-side RRF k=60). Rerank (D-030/D-032) and
+> query decomposition (D-037) are **retained as selectable, measured pipelines** — not
+> deleted — because both improve the **synthetic** slice and their numbers are part of
+> the deliverable (D-039). They are *not the default* because both lose on the **real**
+> forum slice, where plain dense/hybrid wins. Always read the synthetic gains together
+> with the real-slice losses.
+>
+> Run any pipeline: `./tasks.ps1 eval --pipeline dense|hybrid|rerank|decomposed`.
+>
+> | recall@5 | dense | hybrid | rerank | decomposition |
+> |---|---|---|---|---|
+> | overall | 0.612 | **0.693** | 0.638 | 0.615 |
+> | **forum (real)** | **0.577** | 0.404 | 0.327 | 0.173 |
+> | synthetic | 0.622 | **0.768** | 0.718 | 0.730 |
+>
+> Takeaway: every technique beyond plain retrieval helps synthetic (lexically close to
+> its gold) and hurts real (semantically matched) — an eval-validity finding, and the
+> reason Layer 5's value is grounding honesty (D-038), not fancier retrieval.
 
 ## Three-way summary (n=126)
 

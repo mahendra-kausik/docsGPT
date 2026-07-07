@@ -18,6 +18,7 @@ class AgentState(TypedDict, total=False):
 
     question: str
     chunks: list[Hit]           # retrieved context passages, numbered [1..k]
-    answer: str                 # synthesized answer text with inline [n] markers
+    answer: str                 # answer text with inline [n] markers (or the refusal)
+    grounded: bool              # did the answer pass grounding verification (else refused)
     citations: list[Citation]   # resolved [n] -> source
     invalid_citations: list[int]  # [n] markers pointing outside the context (hallucinated)
