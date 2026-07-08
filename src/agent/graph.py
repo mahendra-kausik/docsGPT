@@ -11,17 +11,27 @@ from __future__ import annotations
 
 from langgraph.graph import END, START, StateGraph
 
-from src.agent.nodes import cite_node, retrieve_node, synthesize_node
+from src.agent.nodes import (
+    cite_node,
+    refuse_node,
+    retrieve_node,
+    retry_node,
+    route_after_verify,
+    synthesize_node,
+)
 from src.agent.state import AgentState
 from src.agent.verify import verify_node
 from src.config import get_settings
 
 
 def build_agent(retriever=None, gateway=None, verifier=None):
-    """Compile the retrieve→synthesize→verify→cite graph (injectable deps for testing).
+    """Compile the self-correcting cited-answer graph (injectable deps for testing).
 
-    verify checks the drafted answer against its cited passages and refuses if it isn't
-    grounded — the measured fix for hallucination on strong priors (D-036/D-038).
+    retrieve → synthesize → verify → {cite | retry→synthesize | refuse→cite} (D-041).
+    verify only *judges* grounding (D-038's post-synthesis check); the control router owns
+    the retry/refuse decision, so an ungrounded draft gets a bounded number of feedback-
+    guided re-syntheses over the same context (Layer 5c) before the agent refuses. Retry is
+    re-synthesis, not re-retrieval (re-retrieval was measured-rejected, D-037).
     retriever + synthesis gateway default to the deployed hybrid + Gemini; the verifier
     defaults to Groq 8B, which verifies better than Gemini here precisely because it does
     not "know" the answer and so actually reads the passages (D-038).
@@ -43,16 +53,35 @@ def build_agent(retriever=None, gateway=None, verifier=None):
     g.add_node("retrieve", retrieve_node(retriever))
     g.add_node("synthesize", synthesize_node(gateway))
     g.add_node("verify", verify_node(verifier))
+    g.add_node("retry", retry_node)
+    g.add_node("refuse", refuse_node)
     g.add_node("cite", cite_node)
     g.add_edge(START, "retrieve")
     g.add_edge("retrieve", "synthesize")
     g.add_edge("synthesize", "verify")
-    g.add_edge("verify", "cite")
+    g.add_conditional_edges(
+        "verify", route_after_verify, {"cite": "cite", "retry": "retry", "refuse": "refuse"}
+    )
+    g.add_edge("retry", "synthesize")
+    g.add_edge("refuse", "cite")
     g.add_edge("cite", END)
     return g.compile()
 
 
-def answer_question(question: str, *, retriever=None, gateway=None, verifier=None) -> AgentState:
-    """Run the agent once and return the final state (answer + resolved citations)."""
+def answer_question(
+    question: str,
+    *,
+    retriever=None,
+    gateway=None,
+    verifier=None,
+    max_retries: int | None = None,
+) -> AgentState:
+    """Run the agent once and return the final state (answer + resolved citations).
+
+    max_retries overrides the self-correction budget (default: config agent_max_retries);
+    pass 0 to reproduce Layer 5b's straight-refuse-on-ungrounded behavior (D-041).
+    """
+    if max_retries is None:
+        max_retries = get_settings().agent_max_retries
     agent = build_agent(retriever=retriever, gateway=gateway, verifier=verifier)
-    return agent.invoke({"question": question})
+    return agent.invoke({"question": question, "retries": 0, "max_retries": max_retries})

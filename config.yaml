@@ -10,6 +10,7 @@ cheap_model: groq/llama-3.1-8b-instant    # decompose/grade/rewrite + RAGAS judg
 
 # --- Agent (Layer 5a: cited-answer graph) ---
 agent_context_k: 8    # chunks retrieved (hybrid) and passed to synthesis as [1..k] (D-034)
+agent_max_retries: 1  # Layer 5c: max self-correction re-syntheses when the draft is ungrounded (D-041); 0 == 5b behavior
 
 # --- Retrieval / fusion ---
 sparse_model: Qdrant/bm25   # fastembed BM25 sparse embeddings for hybrid (D-026)

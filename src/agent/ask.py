@@ -14,14 +14,24 @@ from src.agent.graph import answer_question
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Ask the cited-answer agent (Layer 5a).")
+    ap = argparse.ArgumentParser(description="Ask the cited-answer agent (Layer 5a/5c).")
     ap.add_argument("question", nargs="+", help="the question to answer")
+    ap.add_argument(
+        "--max-retries",
+        type=int,
+        default=None,
+        help="self-correction budget on an ungrounded draft (default: config; 0 = 5b behavior)",
+    )
     args = ap.parse_args()
     question = " ".join(args.question)
 
-    state = answer_question(question)
+    state = answer_question(question, max_retries=args.max_retries)
     print(f"\nQ: {question}\n")
     print(state.get("answer", "").strip())
+
+    retries = state.get("retries", 0)
+    if retries:
+        print(f"\n[self-correction] re-synthesized {retries}x before this answer")
 
     citations = state.get("citations", [])
     if citations:

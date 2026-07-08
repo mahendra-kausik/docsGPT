@@ -55,7 +55,13 @@ def verify_grounded(question: str, answer: str, chunks, gateway) -> bool:
 
 
 def verify_node(gateway):
-    """Factory: node that refuses the answer if it isn't grounded in the passages (Groq)."""
+    """Factory: node that JUDGES whether the answer is grounded in the passages (Groq).
+
+    Layer 5c separates judging from acting: this node only sets state['grounded']; the
+    control router (route_after_verify) then decides whether to retry, refuse, or accept
+    (D-041). In 5b this node owned the refusal; that decision now lives in the router so a
+    retry budget can intervene before an ungrounded draft is discarded.
+    """
 
     def _verify(state) -> dict:
         answer = state.get("answer", "").strip()
@@ -65,9 +71,8 @@ def verify_node(gateway):
             return {"grounded": True}
         grounded = verify_grounded(state["question"], answer, chunks, gateway)
         if not grounded:
-            logger.info("verify: answer not grounded -> refusing")
-            return {"grounded": False, "answer": _REFUSAL}
-        return {"grounded": True}
+            logger.info("verify: answer not grounded")
+        return {"grounded": grounded}
 
     return _verify
 

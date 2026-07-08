@@ -22,3 +22,7 @@ class AgentState(TypedDict, total=False):
     grounded: bool              # did the answer pass grounding verification (else refused)
     citations: list[Citation]   # resolved [n] -> source
     invalid_citations: list[int]  # [n] markers pointing outside the context (hallucinated)
+    # Layer 5c self-correction loop (D-041):
+    retries: int                # re-syntheses already attempted on an ungrounded draft
+    max_retries: int            # budget before the agent refuses (0 == 5b behavior)
+    retry_feedback: str         # corrective note prepended to the next synthesis

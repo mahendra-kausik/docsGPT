@@ -58,17 +58,52 @@ def retrieve_node(retriever):
 
 
 def synthesize_node(gateway, max_tokens: int = 1024):
-    """Factory: node that synthesizes a cited answer from the context via the LLM."""
+    """Factory: node that synthesizes a cited answer from the context via the LLM.
+
+    On a self-correction retry (Layer 5c), state['retry_feedback'] is prepended so the
+    model knows its previous draft was ungrounded and must answer only from the passages
+    or refuse — the retry re-synthesizes over the SAME context (recall isn't the problem;
+    re-retrieval was measured-rejected, D-037), it re-grounds the generation (D-041).
+    """
 
     def _synthesize(state: AgentState) -> dict:
         chunks = state["chunks"]
         if not chunks:
-            return {"answer": "I don't know based on the provided documentation."}
+            return {"answer": _REFUSAL}
         user = f"Question: {state['question']}\n\nContext:\n{format_context(chunks)}"
+        feedback = state.get("retry_feedback")
+        if feedback:
+            user = f"{feedback}\n\n{user}"
         answer = gateway.complete(_SYSTEM, user, max_tokens=max_tokens)
         return {"answer": answer.strip()}
 
     return _synthesize
+
+
+_RETRY_FEEDBACK = (
+    "Your previous answer made one or more claims that are NOT supported by the numbered "
+    "passages. Answer again using ONLY what the passages state; drop any unsupported claim. "
+    f"If the passages do not contain the answer, reply with EXACTLY: {_REFUSAL}"
+)
+
+
+def retry_node(state: AgentState) -> dict:
+    """Charge one retry and stage corrective feedback for the next synthesis (Layer 5c)."""
+    return {"retries": state.get("retries", 0) + 1, "retry_feedback": _RETRY_FEEDBACK}
+
+
+def refuse_node(state: AgentState) -> dict:
+    """Replace an ungrounded draft with the refusal once the retry budget is spent (5c)."""
+    return {"answer": _REFUSAL, "grounded": False}
+
+
+def route_after_verify(state: AgentState) -> str:
+    """Conditional edge: grounded -> cite; else retry while budget remains, else refuse (5c)."""
+    if state.get("grounded", True):
+        return "cite"
+    if state.get("retries", 0) < state.get("max_retries", 0):
+        return "retry"
+    return "refuse"
 
 
 def cite_node(state: AgentState) -> dict:
