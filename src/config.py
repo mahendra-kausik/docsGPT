@@ -102,6 +102,11 @@ class Settings(BaseSettings):
     cheap_model: str = "groq/llama-3.1-8b-instant"
     agent_context_k: int = 8  # chunks retrieved + cited by the agent (Layer 5a, D-034)
     agent_max_retries: int = 1  # self-correction re-syntheses on ungrounded draft (Layer 5c, D-041)
+    # Layer 5d RAGAS: cap contexts fed to the judge so one request fits Groq's 6000 TPM
+    # free-tier budget (8 full chunks overflowed it -> 413). Scoring-only; agent unaffected (D-042).
+    ragas_context_k: int = 4      # number of retrieved chunks passed to the RAGAS judge
+    ragas_context_chars: int = 600  # per-chunk char cap for the RAGAS judge
+    ragas_reference_chars: int = 800  # cap the (often long) forum reference answer fed to the judge
     sparse_model: str = "Qdrant/bm25"  # fastembed BM25 for hybrid (Layer 4a, D-026)
     rrf_k: int = 60                     # client-side RRF constant, tunable (D-027)
     retrieve_top_k: int = 50

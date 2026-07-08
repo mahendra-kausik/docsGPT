@@ -12,6 +12,11 @@ cheap_model: groq/llama-3.1-8b-instant    # decompose/grade/rewrite + RAGAS judg
 agent_context_k: 8    # chunks retrieved (hybrid) and passed to synthesis as [1..k] (D-034)
 agent_max_retries: 1  # Layer 5c: max self-correction re-syntheses when the draft is ungrounded (D-041); 0 == 5b behavior
 
+# --- RAGAS answer-quality eval (Layer 5d, D-042): keep each judge request under Groq's 6000 TPM free tier ---
+ragas_context_k: 4        # retrieved chunks passed to the RAGAS judge (8 full chunks overflowed 6000 TPM -> 413)
+ragas_context_chars: 600  # per-chunk char cap fed to the RAGAS judge
+ragas_reference_chars: 800  # cap the (often long) forum reference answer fed to the judge (else 413)
+
 # --- Retrieval / fusion ---
 sparse_model: Qdrant/bm25   # fastembed BM25 sparse embeddings for hybrid (D-026)
 rrf_k: 60             # RRF constant: score(d) = sum 1/(k + rank_i(d)); tunable, client-side (D-027)

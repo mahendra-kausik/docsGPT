@@ -36,6 +36,11 @@ data/gold/review.md
 data/gold/gold_forum.jsonl
 data/gold/gold_synth.jsonl
 
+# --- RAGAS eval datasets (Layer 5d): contain the forum accepted-answer body as `reference`,
+# which D-019 says never to commit. The ragas_*.json SCORES (numbers only) ARE committed;
+# regenerate a dataset from the gold set with ./tasks.ps1 ragas. ---
+results/ragas_dataset_*.jsonl
+
 # --- OS / editor ---
 .DS_Store
 Thumbs.db

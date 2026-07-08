@@ -47,9 +47,10 @@ switch ($task) {
     "eval"         { Assert-Venv; & $py -m src.eval.run_eval @args }
     "sweep-rrf"    { Assert-Venv; & $py -m src.eval.sweep_rrf @args }
     "bakeoff"      { Assert-Venv; & $py -m src.eval.rerank_bakeoff @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help" }
+    "ragas"        { Assert-Venv; & $py -m src.eval.ragas_eval @args }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | help"
         exit 1
     }
 }
