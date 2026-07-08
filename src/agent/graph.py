@@ -9,6 +9,8 @@ so the wiring is unit-testable with fakes and the retriever choice stays config/
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+
 from langgraph.graph import END, START, StateGraph
 
 from src.agent.nodes import (
@@ -85,3 +87,27 @@ def answer_question(
         max_retries = get_settings().agent_max_retries
     agent = build_agent(retriever=retriever, gateway=gateway, verifier=verifier)
     return agent.invoke({"question": question, "retries": 0, "max_retries": max_retries})
+
+
+def stream_events(
+    question: str,
+    *,
+    retriever=None,
+    gateway=None,
+    verifier=None,
+    max_retries: int | None = None,
+) -> Iterator[tuple[str, dict]]:
+    """Yield ``(node_name, state_delta)`` as each graph node completes (Layer 6, D-043).
+
+    Wraps LangGraph's ``.stream(stream_mode="updates")`` so the API can emit lifecycle
+    events (retrieve/synthesize/verify/retry/refuse/cite) in real time. The caller
+    accumulates the deltas into the final state; the *answer* is only surfaced after the
+    verify/route stages have run, so a draft the verifier retracts is never streamed to
+    the user (the whole point of streaming events rather than raw synthesis tokens, D-043).
+    """
+    if max_retries is None:
+        max_retries = get_settings().agent_max_retries
+    agent = build_agent(retriever=retriever, gateway=gateway, verifier=verifier)
+    inputs = {"question": question, "retries": 0, "max_retries": max_retries}
+    for update in agent.stream(inputs, stream_mode="updates"):
+        yield from update.items()

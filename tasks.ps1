@@ -48,9 +48,11 @@ switch ($task) {
     "sweep-rrf"    { Assert-Venv; & $py -m src.eval.sweep_rrf @args }
     "bakeoff"      { Assert-Venv; & $py -m src.eval.rerank_bakeoff @args }
     "ragas"        { Assert-Venv; & $py -m src.eval.ragas_eval @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | help" }
+    "serve"  { Assert-Venv; & $py -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000 @args }
+    "bench"  { Assert-Venv; & $py -m src.api.bench @args }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | serve | bench | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | serve | bench | help"
         exit 1
     }
 }

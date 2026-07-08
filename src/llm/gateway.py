@@ -23,6 +23,7 @@ import time
 from pathlib import Path
 
 from src.config import PROJECT_ROOT, get_settings
+from src.llm.metrics import record_cache_hit, record_call
 
 logger = logging.getLogger(__name__)
 
@@ -105,16 +106,24 @@ class LLMGateway:
         }
         cache_path = self._cache_path(payload)
         if cache_path.exists():
+            # Served without spending quota — counted as a cache hit, not an LLM call (D-043).
+            record_cache_hit()
             return json.loads(cache_path.read_text(encoding="utf-8"))["content"]
 
-        content = self._call_with_backoff(payload)
+        content, usage = self._call_with_backoff(payload)
+        # Record real-call accounting for the active request scope, if any (Layer 6).
+        record_call(usage.get("prompt_tokens"), usage.get("completion_tokens"))
         cache_path.write_text(
             json.dumps({"payload": payload, "content": content}), encoding="utf-8"
         )
         return content
 
-    def _call_with_backoff(self, payload: dict) -> str:
-        """Call the provider, retrying transient/429 errors with backoff + full jitter."""
+    def _call_with_backoff(self, payload: dict) -> tuple[str, dict]:
+        """Call the provider, retrying transient/429 errors with backoff + full jitter.
+
+        Returns ``(content, usage)`` where usage carries prompt/completion token counts
+        (best-effort — providers may omit them), so the caller can record it (D-043).
+        """
         for attempt in range(self.max_retries + 1):
             try:
                 return self._call_once(payload)
@@ -130,11 +139,11 @@ class LLMGateway:
                 time.sleep(delay)
         raise RuntimeError("unreachable")  # loop either returns or raises
 
-    def _call_once(self, payload: dict) -> str:
-        """One provider call returning the assistant text."""
+    def _call_once(self, payload: dict) -> tuple[str, dict]:
+        """One provider call returning ``(assistant_text, usage)``."""
         return self._gemini_call(payload) if self.provider == "gemini" else self._groq_call(payload)
 
-    def _groq_call(self, payload: dict) -> str:
+    def _groq_call(self, payload: dict) -> tuple[str, dict]:
         kwargs = {
             "model": payload["model"],
             "messages": [
@@ -148,9 +157,15 @@ class LLMGateway:
         if payload["response_json"]:
             kwargs["response_format"] = {"type": "json_object"}
         resp = self.client.chat.completions.create(**kwargs)
-        return resp.choices[0].message.content or ""
+        content = resp.choices[0].message.content or ""
+        u = getattr(resp, "usage", None)
+        usage = {
+            "prompt_tokens": getattr(u, "prompt_tokens", None),
+            "completion_tokens": getattr(u, "completion_tokens", None),
+        }
+        return content, usage
 
-    def _gemini_call(self, payload: dict) -> str:
+    def _gemini_call(self, payload: dict) -> tuple[str, dict]:
         from google.genai import types
 
         cfg = types.GenerateContentConfig(
@@ -166,7 +181,12 @@ class LLMGateway:
         resp = self.client.models.generate_content(
             model=payload["model"], contents=payload["user"], config=cfg
         )
-        return resp.text or ""
+        u = getattr(resp, "usage_metadata", None)
+        usage = {
+            "prompt_tokens": getattr(u, "prompt_token_count", None),
+            "completion_tokens": getattr(u, "candidates_token_count", None),
+        }
+        return resp.text or "", usage
 
     def _is_retryable(self, exc: Exception) -> bool:
         """Provider-specific: retry 5xx + 429/connection/timeout, never 4xx bad requests."""

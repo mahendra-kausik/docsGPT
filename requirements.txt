@@ -45,6 +45,13 @@ google-genai==2.10.0
 # the adapter installs a harmless isinstance-sentinel shim before importing ragas (D-042).
 ragas==0.4.3
 
+# --- API + streaming (Layer 6: FastAPI app, SSE cited-answer stream, D-043) ---
+# FastAPI on Starlette; the /ask/stream endpoint emits Server-Sent Events (no extra dep).
+# uvicorn is the ASGI server for local + Cloud Run (Layer 8). httpx (already a groq
+# transitive dep) backs fastapi.testclient.TestClient in tests. py3.13 wheels verified.
+fastapi==0.139.0
+uvicorn==0.51.0
+
 # --- Dev / tooling ---
 pytest==8.3.3
 ruff==0.6.9
