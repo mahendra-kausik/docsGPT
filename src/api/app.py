@@ -46,6 +46,21 @@ class AskRequest(BaseModel):
 
     question: str
     max_retries: int | None = None  # None -> config default (agent_max_retries, D-041)
+    # None -> config default synthesizer (Groq 70B, D-046); provider-prefixed to opt into
+    # Gemini per request, e.g. "gemini/gemini-2.5-flash" (burns its 20/day free cap — demo only).
+    synthesis_model: str | None = None
+
+
+def _synthesis_gateway(model: str | None):
+    """Build a per-request synthesis gateway when the client selected a model (Layer 8a, D-046).
+
+    None -> the graph builds the deployed default (config synthesis_model) itself.
+    """
+    if not model:
+        return None
+    from src.llm.gateway import LLMGateway
+
+    return LLMGateway(model)
 
 
 def _citations_payload(state: dict) -> list[dict]:
@@ -110,7 +125,10 @@ def ask(req: AskRequest) -> dict:
     with trace_agent(req.question, name="ask") as tr:
         with collect_metrics() as m:
             state = answer_question(
-                req.question, max_retries=req.max_retries, config={"callbacks": tr.callbacks}
+                req.question,
+                gateway=_synthesis_gateway(req.synthesis_model),
+                max_retries=req.max_retries,
+                config={"callbacks": tr.callbacks},
             )
         metrics = {**m.as_dict(), "latency_ms": round((time.perf_counter() - t0) * 1000, 1)}
         payload = _answer_payload(state, metrics)
@@ -142,6 +160,7 @@ async def ask_stream(req: AskRequest) -> StreamingResponse:
                 with collect_metrics() as m:
                     for node, delta in stream_events(
                         req.question,
+                        gateway=_synthesis_gateway(req.synthesis_model),
                         max_retries=req.max_retries,
                         config={"callbacks": tr.callbacks},
                     ):

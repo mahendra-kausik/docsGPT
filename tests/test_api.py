@@ -101,7 +101,9 @@ def test_healthz():
 
 def test_ask_returns_answer_citations_and_metrics(monkeypatch):
     monkeypatch.setattr(
-        app_module, "answer_question", lambda q, max_retries=None, config=None: _fake_state()
+        app_module,
+        "answer_question",
+        lambda q, gateway=None, max_retries=None, config=None: _fake_state(),
     )
     r = client.post("/ask", json={"question": "how do I stream tokens?"})
     assert r.status_code == 200
@@ -115,11 +117,41 @@ def test_ask_returns_answer_citations_and_metrics(monkeypatch):
         assert key in body["metrics"]
 
 
+def test_ask_synthesis_model_selects_gateway(monkeypatch):
+    # A selected synthesis_model reaches the graph as a gateway on that provider/model (D-046).
+    seen = {}
+
+    def fake(q, gateway=None, max_retries=None, config=None):
+        seen["gateway"] = gateway
+        return _fake_state()
+
+    monkeypatch.setattr(app_module, "answer_question", fake)
+    r = client.post(
+        "/ask", json={"question": "x", "synthesis_model": "groq/llama-3.3-70b-versatile"}
+    )
+    assert r.status_code == 200
+    gw = seen["gateway"]
+    assert gw is not None and gw.provider == "groq" and gw.model == "llama-3.3-70b-versatile"
+
+
+def test_ask_default_lets_graph_pick_synthesizer(monkeypatch):
+    # No synthesis_model -> gateway is None so the graph builds the config default (Groq 70B).
+    seen = {}
+
+    def fake(q, gateway=None, max_retries=None, config=None):
+        seen["gateway"] = gateway
+        return _fake_state()
+
+    monkeypatch.setattr(app_module, "answer_question", fake)
+    client.post("/ask", json={"question": "x"})
+    assert seen["gateway"] is None
+
+
 def test_ask_stream_emits_stages_tokens_and_done(monkeypatch):
     from src.agent.citations import Citation
     from src.retrieval.search import Hit
 
-    def fake_stream_events(question, *, max_retries=None, config=None):
+    def fake_stream_events(question, *, gateway=None, max_retries=None, config=None):
         hit = Hit(id="a", score=0.0, text="t", source_url="u", heading_path="H")
         yield "retrieve", {"chunks": [hit]}
         yield "synthesize", {"answer": "You can stream tokens [1]."}
@@ -148,7 +180,7 @@ def test_ask_stream_emits_stages_tokens_and_done(monkeypatch):
 
 
 def test_ask_stream_reports_error_frame(monkeypatch):
-    def boom(question, *, max_retries=None, config=None):
+    def boom(question, *, gateway=None, max_retries=None, config=None):
         raise RuntimeError("kaboom")
         yield  # pragma: no cover — make it a generator
 

@@ -1,0 +1,13 @@
+# Keep the serving image slim: ship src/ + config.yaml, nothing regenerable or secret.
+.git
+.venv
+.env
+.cache
+results
+data/raw
+data/gold
+tests
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache

@@ -100,7 +100,10 @@ class Settings(BaseSettings):
     # --- Tunables (defaults mirror config.yaml; config.yaml overrides at load) ---
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"  # MiniLM for CPU latency (D-030)
-    synthesis_model: str = "gemini/gemini-2.5-flash"  # provider-prefixed (D-033)
+    # Deployed default = Groq 70B: Gemini 2.5-flash free = 20 req/day, a non-starter as a
+    # public default; Groq llama-3.3-70b ~1000/day matched Gemini on well-retrieved Qs (D-046).
+    # Gemini stays opt-in per /ask request (synthesis_model). Provider-prefixed (D-033).
+    synthesis_model: str = "groq/llama-3.3-70b-versatile"
     cheap_model: str = "groq/llama-3.1-8b-instant"
     agent_context_k: int = 8  # chunks retrieved + cited by the agent (Layer 5a, D-034)
     agent_max_retries: int = 1  # self-correction re-syntheses on ungrounded draft (Layer 5c, D-041)
