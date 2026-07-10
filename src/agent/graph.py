@@ -77,16 +77,20 @@ def answer_question(
     gateway=None,
     verifier=None,
     max_retries: int | None = None,
+    config: dict | None = None,
 ) -> AgentState:
     """Run the agent once and return the final state (answer + resolved citations).
 
     max_retries overrides the self-correction budget (default: config agent_max_retries);
     pass 0 to reproduce Layer 5b's straight-refuse-on-ungrounded behavior (D-041).
+    ``config`` is the LangGraph run config (e.g. ``{"callbacks": [...]}`` for Langfuse
+    node spans, Layer 7 / D-045); None runs untraced.
     """
     if max_retries is None:
         max_retries = get_settings().agent_max_retries
     agent = build_agent(retriever=retriever, gateway=gateway, verifier=verifier)
-    return agent.invoke({"question": question, "retries": 0, "max_retries": max_retries})
+    inputs = {"question": question, "retries": 0, "max_retries": max_retries}
+    return agent.invoke(inputs, config=config)
 
 
 def stream_events(
@@ -96,6 +100,7 @@ def stream_events(
     gateway=None,
     verifier=None,
     max_retries: int | None = None,
+    config: dict | None = None,
 ) -> Iterator[tuple[str, dict]]:
     """Yield ``(node_name, state_delta)`` as each graph node completes (Layer 6, D-043).
 
@@ -109,5 +114,5 @@ def stream_events(
         max_retries = get_settings().agent_max_retries
     agent = build_agent(retriever=retriever, gateway=gateway, verifier=verifier)
     inputs = {"question": question, "retries": 0, "max_retries": max_retries}
-    for update in agent.stream(inputs, stream_mode="updates"):
+    for update in agent.stream(inputs, config=config, stream_mode="updates"):
         yield from update.items()

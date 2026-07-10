@@ -100,7 +100,9 @@ def test_healthz():
 
 
 def test_ask_returns_answer_citations_and_metrics(monkeypatch):
-    monkeypatch.setattr(app_module, "answer_question", lambda q, max_retries=None: _fake_state())
+    monkeypatch.setattr(
+        app_module, "answer_question", lambda q, max_retries=None, config=None: _fake_state()
+    )
     r = client.post("/ask", json={"question": "how do I stream tokens?"})
     assert r.status_code == 200
     body = r.json()
@@ -117,7 +119,7 @@ def test_ask_stream_emits_stages_tokens_and_done(monkeypatch):
     from src.agent.citations import Citation
     from src.retrieval.search import Hit
 
-    def fake_stream_events(question, *, max_retries=None):
+    def fake_stream_events(question, *, max_retries=None, config=None):
         hit = Hit(id="a", score=0.0, text="t", source_url="u", heading_path="H")
         yield "retrieve", {"chunks": [hit]}
         yield "synthesize", {"answer": "You can stream tokens [1]."}
@@ -146,7 +148,7 @@ def test_ask_stream_emits_stages_tokens_and_done(monkeypatch):
 
 
 def test_ask_stream_reports_error_frame(monkeypatch):
-    def boom(question, *, max_retries=None):
+    def boom(question, *, max_retries=None, config=None):
         raise RuntimeError("kaboom")
         yield  # pragma: no cover — make it a generator
 

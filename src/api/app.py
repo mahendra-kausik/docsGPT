@@ -32,6 +32,7 @@ from pydantic import BaseModel
 
 from src.agent.graph import answer_question, stream_events
 from src.llm.metrics import collect_metrics
+from src.obs import trace_agent
 
 app = FastAPI(title="DocsGPT-Agent", version="0.6.0")
 
@@ -106,10 +107,15 @@ def ask(req: AskRequest) -> dict:
     gateway call it makes) shares one thread and one metrics scope.
     """
     t0 = time.perf_counter()
-    with collect_metrics() as m:
-        state = answer_question(req.question, max_retries=req.max_retries)
-    metrics = {**m.as_dict(), "latency_ms": round((time.perf_counter() - t0) * 1000, 1)}
-    return _answer_payload(state, metrics)
+    with trace_agent(req.question, name="ask") as tr:
+        with collect_metrics() as m:
+            state = answer_question(
+                req.question, max_retries=req.max_retries, config={"callbacks": tr.callbacks}
+            )
+        metrics = {**m.as_dict(), "latency_ms": round((time.perf_counter() - t0) * 1000, 1)}
+        payload = _answer_payload(state, metrics)
+        tr.set_output(payload, metadata={"metrics": metrics})
+    return payload
 
 
 def _iter_words(text: str) -> Iterator[str]:
@@ -130,19 +136,28 @@ async def ask_stream(req: AskRequest) -> StreamingResponse:
         try:
             t0 = time.perf_counter()
             state: dict = {}
-            with collect_metrics() as m:
-                for node, delta in stream_events(req.question, max_retries=req.max_retries):
-                    state.update(delta)
-                    ev = _stage_event(node, delta)
-                    if ev is not None:
-                        put(("stage", ev))
-                metrics = {
-                    **m.as_dict(),
-                    "latency_ms": round((time.perf_counter() - t0) * 1000, 1),
-                }
+            # Root trace opened in THIS worker thread so the Langfuse OTel context and the
+            # metrics contextvar share the one thread every gateway call runs on (D-043/D-045).
+            with trace_agent(req.question, name="ask/stream") as tr:
+                with collect_metrics() as m:
+                    for node, delta in stream_events(
+                        req.question,
+                        max_retries=req.max_retries,
+                        config={"callbacks": tr.callbacks},
+                    ):
+                        state.update(delta)
+                        ev = _stage_event(node, delta)
+                        if ev is not None:
+                            put(("stage", ev))
+                    metrics = {
+                        **m.as_dict(),
+                        "latency_ms": round((time.perf_counter() - t0) * 1000, 1),
+                    }
+                payload = _answer_payload(state, metrics)
+                tr.set_output(payload, metadata={"metrics": metrics})
             for word in _iter_words(state.get("answer", "")):
                 put(("token", {"text": word}))
-            put(("done", _answer_payload(state, metrics)))
+            put(("done", payload))
         except Exception as exc:  # noqa: BLE001 — surface any failure to the client, then close
             put(("error", {"detail": f"{type(exc).__name__}: {exc}"}))
         finally:

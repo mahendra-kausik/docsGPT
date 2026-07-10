@@ -24,6 +24,7 @@ from pathlib import Path
 
 from src.config import PROJECT_ROOT, get_settings
 from src.llm.metrics import record_cache_hit, record_call
+from src.obs import observe_generation
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +111,14 @@ class LLMGateway:
             record_cache_hit()
             return json.loads(cache_path.read_text(encoding="utf-8"))["content"]
 
-        content, usage = self._call_with_backoff(payload)
+        # Trace the real network call as a Langfuse generation (no-op when disabled,
+        # D-045); opened here so it nests under the current LangGraph node span.
+        params = {"temperature": temp, "max_tokens": max_tokens, "seed": self.s.llm_seed}
+        with observe_generation(
+            self.model, input={"system": system, "user": user}, model_parameters=params
+        ) as gen:
+            content, usage = self._call_with_backoff(payload)
+            gen.set_result(content, usage)
         # Record real-call accounting for the active request scope, if any (Layer 6).
         record_call(usage.get("prompt_tokens"), usage.get("completion_tokens"))
         cache_path.write_text(

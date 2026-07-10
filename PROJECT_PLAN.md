@@ -31,6 +31,9 @@ to *be* the project.
 - **Sources:** official docs sites (docs pages), the repo's **GitHub Discussions** (these have a native
   *"marked as answer"* feature → your best source of natural relevance labels), plus **closed Issues** with
   a linked resolving comment/PR, plus `CHANGELOG` / release notes.
+  > **→ Superseded by D-018.** GitHub Discussions migrated to the **LangChain Forum** (Discourse) in
+  > mid-2025 — `langchain-ai/langchain` has only 4 unanswered Announcement discussions, `langgraph` has
+  > none. Natural labels actually come from 163 solved Forum topics; closed Issues were never hand-mapped.
 - **Size target:** ~3,000–15,000 chunks (a few hundred doc pages + a few thousand discussion/issue threads).
   Comfortably within Qdrant free tier (~1M vectors @ 768-dim; see §3).
 
@@ -54,6 +57,11 @@ to *be* the project.
 - **GitHub _Issues_ do NOT have accepted answers.** For issues, you must hand-map the resolving comment/PR.
 - Plan for **~100–150 hand-verified Q→gold-chunk pairs** as the core gold set (built in Layer 3), augmented
   with RAGAS-synthesized questions. Budget real time for curation; do not assume it's automatic.
+> **→ Superseded by D-018/D-025.** Labels came from Forum solved-topics, not GitHub. The reality check
+> proved even sharper than expected: 114/163 accepted forum answers link no docs page at all (code
+> fixes, not doc pointers) — so the gold set rebalanced to a **26-item real answer-link slice** (the
+> honest headline) + **100 synthetic** (Groq-8B generated, gold-by-construction) for statistical power,
+> reported separately per source, never blended into one number (D-025).
 
 ---
 
@@ -70,8 +78,11 @@ User ──► Vercel (React/TS frontend, free Hobby tier)
            │        └─ Gemini 2.5/3.x Flash        ← final answer synthesis
            │
            ├─►  Qdrant Cloud (free tier): dense vectors + BM25 sparse + RRF fusion (server-side)
+           │      [→ D-027: qdrant-client's FusionQuery has no k, so fusion is CLIENT-side to honor k=60]
            │
            ├─►  BGE cross-encoder reranker  ← runs in-container on CPU
+           │      [→ D-030/D-031/D-032: measured NEGATIVE (worse recall + 14x latency); rejected as
+           │       default, kept as a selectable --pipeline rerank ablation]
            │
            └─►  Langfuse Cloud (free tier): every node emits a trace span (tokens, latency, cost)
 
@@ -83,6 +94,13 @@ User ──► Vercel (React/TS frontend, free Hobby tier)
 **Agent flow (the core differentiator, Layer 5):**
 `decompose query → (retrieve → grade relevance → rewrite query if weak)×N → synthesize cited answer →
 verify answer is grounded in citations → self-correct/retry if not.`
+> **→ Superseded by D-037/D-038/D-041.** The built flow is `retrieve → synthesize → verify → {cite |
+> retry→synthesize | refuse→cite}`. Query decomposition/multi-query retrieval was built, measured, and
+> **rejected** (crushes the real-question slice, D-037). Pre-synthesis relevance grading was built,
+> measured, and **rejected** (prior-contaminated — the grader can't separate "I know this" from "the
+> passages say this," D-038); replaced by **post-synthesis grounding verification**. Self-correction
+> **re-synthesizes over the same context** with corrective feedback, not re-retrieval (D-041) — re-query
+> was already shown to hurt, so a retry that re-retrieves would repeat a known failure.
 
 ---
 
@@ -92,6 +110,9 @@ verify answer is grounded in citations → self-correct/retry if not.`
 - **Specs (⚠️ VERIFY):** 0.5 vCPU, 1 GB RAM, 4 GB disk, no credit card, permanent. Holds ~1M vectors @ 768-dim.
 - **Why:** stores **dense + BM25 sparse vectors in one collection** and does **RRF fusion server-side**
   (`FusionQuery(fusion=Fusion.RRF)`), so you don't run a separate Elasticsearch. Highest-leverage infra choice.
+  > **→ Superseded by D-027.** `qdrant-client` 1.18's `FusionQuery` exposes no `k` parameter, so the
+  > documented `k=60` (D-006) couldn't be honored server-side. Fusion runs **client-side** in Python
+  > instead — two named-vector queries, fused with `rrf_fuse()`, keeping `k` a real, sweepable tunable.
 - **⚠️ CRITICAL OPERATIONAL RISK:** free clusters **auto-suspend after ~1 week of inactivity and are deleted
   after ~4 weeks of inactivity.** Mitigation (build in Layer 8): a one-command **re-index script** so the
   corpus can be rebuilt in minutes, plus a lightweight scheduled **keep-alive ping**. **Never treat the free
@@ -110,6 +131,7 @@ verify answer is grounded in citations → self-correct/retry if not.`
 
 ### Keyword / sparse retrieval + fusion — **Qdrant native BM25 sparse + RRF**
 - Standard **RRF**: `score(d) = Σ 1/(k + rank_i(d))`, `k = 60`. Server-side in Qdrant.
+  > **→ Superseded by D-027**: fusion is client-side (see above) so `k=60` is actually honored/tunable.
 - **Alternative to mention:** `rank_bm25` in-memory (simplest, fine < ~50k chunks) or Postgres full-text.
 
 ### Reranker — **BGE cross-encoder, self-hosted (free)**
@@ -118,6 +140,11 @@ verify answer is grounded in citations → self-correct/retry if not.`
 - Runs in the Cloud Run container on CPU. Measure and report rerank latency.
 - **Avoid** depending on Cohere Rerank for the live app — its free/trial quota (⚠️ VERIFY, ~1,000 calls/month) is
   too tight for a public demo. Optionally use it only for a one-off *API-vs-open* comparison ablation.
+> **→ Superseded by D-030/D-031/D-032.** bge-reranker-base measured ~25-30s/query on free-tier CPU
+> (undeployable); swapped to MiniLM-L6, which measurably **hurt** recall/nDCG and cost 14x latency for
+> no gain. A 4-model bake-off (incl. bge via ONNX) confirmed **none** beat hybrid-no-rerank, especially
+> on the real forum slice. Reranking is rejected as the default; hybrid alone ships. Kept as a documented,
+> selectable ablation (`--pipeline rerank`) because it measurably helps the *synthetic* slice.
 
 ### LLMs — **Groq (workhorse) + Gemini (synthesis)**, routed
 - **Groq free tier (⚠️ VERIFY):** 30 RPM, 6,000 TPM, and **RPD varies by model** —
@@ -150,6 +177,10 @@ verify answer is grounded in citations → self-correct/retry if not.`
   (use Groq 8B consistently) so ablations are comparable; record the judge in each results file.
 - **Gold set:** natural labels (Discussions "marked as answer", curated closed-issue resolutions) as primary +
   RAGAS `TestsetGenerator` synthetic (single-hop + multi-hop) as augmentation; hand-verify ~100–150 items.
+  > **→ Superseded by D-018/D-025.** Natural labels = Forum solved topics (26 real answer-link items,
+  > the honest headline), not Discussions/Issues. Synthetic = a **self-rolled** Groq-8B generator (not
+  > RAGAS `TestsetGenerator`) so gold chunk-ids are known by construction and hop-count is controlled;
+  > RAGAS itself is reserved for its real strength — answer-quality judging (Layer 5d, D-042).
 - **Build this EARLY (Layer 3), before hybrid/rerank/agent**, so every later change is a tracked delta.
 
 ### Observability — **Langfuse Cloud free tier**
@@ -184,6 +215,10 @@ Order is leverage-first: a demoable, *measured* core early; polish and product s
   version as metadata on every chunk. Write chunks to versioned JSONL (this is your durable copy).
 - **Gate:** N chunks produced (report N); each has `{id, text, source_url, heading_path, version, type}`; spot-check
   5 chunks show clean, coherent text with intact code blocks.
+  > **→ Superseded by D-016/D-018.** Corpus = a direct `git clone` of `langchain-ai/docs` (.mdx source,
+  > SHA-pinned), not HTML scraping — cleaner and licensing-verified MIT. Labels (Layer 1b) come from the
+  > Forum's public no-auth JSON API, not authenticated GitHub Discussions/Issues. Result: 11,035 chunks /
+  > 751 files.
 
 ### Layer 2 — Indexing & dense baseline retrieval
 - Embed chunks (bge-small default) → push to Qdrant Cloud (dense only for now) → top-k dense search function.
@@ -199,12 +234,20 @@ Order is leverage-first: a demoable, *measured* core early; polish and product s
 - Add BM25 sparse vectors + RRF fusion in Qdrant. Add BGE reranker over fused candidates. Re-run the full eval.
 - **Gate:** a documented before/after table — **dense-only vs hybrid vs hybrid+rerank** — on the same gold set,
   same config. This table alone is a resume bullet.
+  > **→ Superseded by D-030/D-031.** The 3-way table was built exactly as planned (`results/eval_{dense,
+  > hybrid,rerank}_*.json`) — but the **verdict** flipped from "ship the strongest of the three" to
+  > "ship hybrid; reranker is a measured negative, kept only as an ablation." The table is still the
+  > resume bullet — it's just an honest rejection, not a win, for the rerank column.
 
 ### Layer 5 — Agentic loop + citations
 - LangGraph graph: decompose → iterative retrieve → grade → rewrite-on-failure → synthesize → **verify grounding**
   → self-correct/retry. Attach **per-claim citations** to sources. Route nodes per §3 (Groq 8B cheap, Gemini synth).
 - **Gate:** multi-hop questions that single-pass RAG failed now succeed; show a Langfuse/graph trace of the loop;
   citations resolve to real chunks.
+  > **→ Superseded by D-037/D-038/D-041** (same as the §2 agent-flow note above). Built flow:
+  > `retrieve → synthesize → verify(post-hoc grounding) → {cite | retry→synthesize | refuse→cite}`.
+  > Decompose/rewrite-on-failure was measured and dropped; "grade" became post-synthesis verification;
+  > citations resolve + are validated (`invalid_citations` surfaced, not silently dropped, D-034).
 
 ### Layer 6 — API + streaming + rate-limit hardening
 - FastAPI endpoints; stream cited answers; the single LLM wrapper with backoff + routing + cache. Measure LLM
@@ -214,6 +257,14 @@ Order is leverage-first: a demoable, *measured* core early; polish and product s
 ### Layer 7 — Observability
 - Langfuse spans on every node; cost/latency dashboards; a dashboard/route showing eval history + per-query cost/latency.
 - **Gate:** live traces visible in Langfuse; cost & p95 latency per query readable.
+  > **→ Implemented per D-045.** Node spans come from a LangChain `CallbackHandler` threaded into the graph;
+  > **plus** manual `generation` spans emitted by the LLM gateway (it calls the Groq/Gemini SDKs directly, not
+  > LangChain LLMs — D-033 — so the callback can't see the LLM calls / their tokens). Tracing is **optional/
+  > no-op** when keys are absent (tests/CLI/eval need no account) and **flushes per request** (Cloud Run
+  > scale-to-zero). **No custom in-app dashboard route was built** — cost & **p50/p95 latency** are read from
+  > **Langfuse's own trace-aggregation UI** (it provides the percentile dashboard), which satisfies the gate
+  > without duplicating a metrics UI. Retrieval/RAGAS eval history remains in the committed `results/*.json`
+  > (Layers 3–5d), not folded into the Langfuse view. `langfuse==4.13.2` (OpenTelemetry-based).
 
 ### Layer 8 — Deployment (not localhost)
 - Containerize; deploy FastAPI to Cloud Run; React to Vercel; wire Qdrant Cloud + Langfuse + keys via Secret Manager.

@@ -52,6 +52,14 @@ ragas==0.4.3
 fastapi==0.139.0
 uvicorn==0.51.0
 
+# --- Observability (Layer 7: Langfuse tracing of graph nodes + LLM gateway, D-045) ---
+# langfuse 4.x is OpenTelemetry-based; resolves clean against the pinned stack
+# (pydantic 2.13 / langchain-core 1.x untouched) — pulls only the OTel SDK + backoff/wrapt.
+# A LangChain CallbackHandler traces every LangGraph node; the gateway emits generation
+# spans by hand (it calls the Groq/Gemini SDKs directly, so callbacks can't see them).
+# No-op when LANGFUSE_* keys are absent — tests/CLI/eval need no account.
+langfuse==4.13.2
+
 # --- Dev / tooling ---
 pytest==8.3.3
 ruff==0.6.9

@@ -92,7 +92,9 @@ class Settings(BaseSettings):
     qdrant_api_key: str = ""
     langfuse_public_key: str = ""
     langfuse_secret_key: str = ""
-    langfuse_host: str = "https://cloud.langfuse.com"
+    # US region (AWS us-west-2): co-located with Qdrant + planned Cloud Run, both
+    # GCP us-central1 (D-044) — EU (AWS eu-west-1) was an unconsidered placeholder.
+    langfuse_host: str = "https://us.cloud.langfuse.com"
     github_token: str = ""
 
     # --- Tunables (defaults mirror config.yaml; config.yaml overrides at load) ---
