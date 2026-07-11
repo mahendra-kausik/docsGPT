@@ -21,12 +21,14 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import re
 import threading
 import time
 from collections.abc import Iterator
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
@@ -36,6 +38,17 @@ from src.llm.metrics import collect_metrics
 from src.obs import trace_agent
 
 app = FastAPI(title="DocsGPT-Agent", version="0.6.0")
+
+# The UI is served from a separate Vercel origin, so the browser needs CORS (Layer 9, D-049).
+# CORS_ORIGINS is a comma-separated allowlist set on Cloud Run; falls back to the Vite dev
+# origin so local `npm run dev` works with no config.
+_ALLOWED_ORIGINS = [o for o in os.getenv("CORS_ORIGINS", "").split(",") if o]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_ALLOWED_ORIGINS or ["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Split into words keeping trailing whitespace, so the concatenated token stream reproduces
 # the answer exactly (no lost/added spaces).
