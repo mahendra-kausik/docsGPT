@@ -75,6 +75,7 @@ if ($LASTEXITCODE -ne 0) { throw "Cloud Build failed" }
 # --- 4. Deploy. Scale-to-zero (free); CPU boost + generous timeout ease the cold model load. ---
 $secretFlags = ($secretKeys | ForEach-Object { "$_=$($_.ToLower().Replace('_','-')):latest" }) -join ","
 Write-Host "Deploying $Service ..."
+# ^|^ makes '|' the pair separator so commas inside CORS_ORIGINS (multiple origins) survive gcloud parsing.
 gcloud run deploy $Service `
   --image $image `
   --project $Project --region $Region `
@@ -82,7 +83,6 @@ gcloud run deploy $Service `
   --memory 2Gi --cpu 2 --cpu-boost `
   --timeout 600 --min-instances 0 --max-instances 3 `
   --set-secrets $secretFlags `
-  # ^|^ makes '|' the pair separator so commas inside CORS_ORIGINS (multiple origins) survive gcloud parsing.
   --set-env-vars "^|^LANGFUSE_HOST=https://us.cloud.langfuse.com|GCP_PROJECT_ID=$Project|GCP_REGION=$Region|CORS_ORIGINS=$CorsOrigins"
 if ($LASTEXITCODE -ne 0) { throw "Cloud Run deploy failed" }
 
