@@ -37,6 +37,19 @@ switch ($task) {
     "ingest-forum" { Assert-Venv; & $py -m src.ingest.forum @args }
     "index"  { Assert-Venv; & $py -m src.retrieval.index @args }
     "index-hybrid" { Assert-Venv; & $py -m src.retrieval.hybrid_index @args }
+    "reindex" {
+        # One-command rebuild of BOTH collections from data/corpus/chunks.jsonl (the
+        # durable source of truth, D-004): dense first, then hybrid scrolls the dense
+        # vectors + adds BM25. Recovers a deleted Qdrant free cluster (Layer 8c).
+        Assert-Venv
+        # NOT "Stop" here: the HF Hub prints a benign unauthenticated-rate-limit warning to
+        # stderr, which PS 5.1 would promote to a terminating error. Gate on $LASTEXITCODE.
+        $ErrorActionPreference = "Continue"
+        & $py -m src.retrieval.index @args
+        if ($LASTEXITCODE -ne 0) { throw "dense index failed" }
+        & $py -m src.retrieval.hybrid_index @args
+        if ($LASTEXITCODE -ne 0) { throw "hybrid index failed" }
+    }
     "search" { Assert-Venv; & $py -m src.retrieval.search @args }
     "ask"    { Assert-Venv; & $py -m src.agent.ask @args }
     "propose"      { Assert-Venv; & $py -m src.eval.propose @args }
@@ -50,9 +63,9 @@ switch ($task) {
     "ragas"        { Assert-Venv; & $py -m src.eval.ragas_eval @args }
     "serve"  { Assert-Venv; & $py -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000 @args }
     "bench"  { Assert-Venv; & $py -m src.api.bench @args }
-    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | serve | bench | help" }
+    "help"   { Write-Host "Tasks: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | reindex | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | serve | bench | help" }
     default  {
-        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | serve | bench | help"
+        Write-Host "Unknown task '$task'. Try: setup | test | lint | format | ingest | ingest-forum | index | index-hybrid | reindex | search | ask | propose | prefill | synth | compile-gold | build-gold | eval | sweep-rrf | bakeoff | ragas | serve | bench | help"
         exit 1
     }
 }

@@ -31,6 +31,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from src.agent.graph import answer_question, stream_events
+from src.config import get_settings
 from src.llm.metrics import collect_metrics
 from src.obs import trace_agent
 
@@ -112,6 +113,20 @@ def _stage_event(node: str, delta: dict) -> dict | None:
 def healthz() -> dict:
     """Liveness probe (Cloud Run health check, Layer 8)."""
     return {"status": "ok"}
+
+
+@app.get("/ping")
+def ping() -> dict:
+    """Keep-alive that touches Qdrant so its free cluster's idle timer resets (Layer 8c, D-004).
+
+    A Cloud Scheduler job hits this weekly. A cheap `count` is a real Qdrant request (unlike
+    /healthz, which never reaches the store) but loads no models, so it stays fast and free.
+    """
+    from src.retrieval.index import get_client
+
+    s = get_settings()
+    count = get_client().count(s.qdrant_hybrid_collection, exact=False).count
+    return {"status": "ok", "collection": s.qdrant_hybrid_collection, "points": count}
 
 
 @app.post("/ask")
