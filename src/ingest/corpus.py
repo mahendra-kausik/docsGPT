@@ -61,7 +61,15 @@ def select_files(repo_dir: Path, cfg: CorpusConfig) -> list[Path]:
 
 
 def path_to_url(rel_path: str, base_url: str) -> str:
-    """Map a repo path (src/oss/python/x/index.mdx) to a public docs URL for citations."""
+    """Map a repo path to a public docs URL for citations.
+
+    Only `src/oss/python/**` carries the `python` language segment in the repo;
+    the other include_globs (`oss/langchain`, `oss/langgraph`, `oss/deepagents`,
+    `oss/concepts`, `oss/integrations`, top-level `oss/*.mdx`) are language-neutral
+    in the repo but the live site 404s without a language segment — it must be
+    `oss/python/langchain/...`, not `oss/langchain/...`. Insert `python/` right
+    after `oss/` unless it's already there (measured against the live site, D-051).
+    """
     url_path = rel_path
     for prefix in ("src/",):
         if url_path.startswith(prefix):
@@ -69,6 +77,10 @@ def path_to_url(rel_path: str, base_url: str) -> str:
     url_path = url_path.rsplit(".", 1)[0]  # drop extension
     if url_path.endswith("/index"):
         url_path = url_path[: -len("/index")]
+    if url_path == "oss" or url_path.startswith("oss/"):
+        rest = url_path[len("oss") :].lstrip("/")
+        if not (rest == "python" or rest.startswith("python/")):
+            url_path = f"oss/python/{rest}" if rest else "oss/python"
     return f"{base_url.rstrip('/')}/{url_path}"
 
 

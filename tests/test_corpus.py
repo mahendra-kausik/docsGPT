@@ -35,5 +35,10 @@ def test_corpus_schema_and_integrity():
         assert c["id"] not in ids, f"duplicate id {c['id']}"
         ids.add(c["id"])
         assert c["source_url"].startswith("https://docs.langchain.com/oss/")
+        # D-051: every oss/ URL must carry a language segment (python/js) or the live site 404s.
+        rest = c["source_url"].split("/oss/", 1)[1]
+        assert rest == "python" or rest.startswith("python/") or rest.startswith("js/"), (
+            f"missing language segment in {c['source_url']}"
+        )
         # Guard against the base64/unclosed-fence blow-up (a whole file as one chunk).
         assert c["n_chars"] < 200_000, f"suspiciously large chunk in {c['source_path']}"
