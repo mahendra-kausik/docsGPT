@@ -77,7 +77,7 @@
   - **Honest drift vs the prior 8B-override run** (`ragas_20260708T072417Z.json`): faithfulness went **up** (0.311→0.361, contradicts the D-046 "70B is less cautious" caveat on this small sample) while answer_relevancy went **down** (0.380→0.228). n=12 is small — treat as noisy, not a confirmed trend reversal. Document both numbers in the README rather than cherry-picking the better one.
 - **Gate:** retrieval numbers reproduce on re-run (✅); RAGAS re-run reflects the real deployed config with drift vs. the old number explained, not hidden (✅).
 
-**10b — README.md as the "paper"** (architecture diagram, ablation tables, honest caveats) — NOT YET STARTED. File does not exist yet.
+**10b — README.md as the "paper" — ✅ DONE (2026-07-12).** New `README.md`: problem framing, architecture diagram (reflecting actual deployed reality — Groq 70B default/Gemini opt-in, no reranker in the default path, Langfuse), the retrieval ablation table (dense/hybrid/rerank/decomposed, per-source), the RAGAS answer-quality table (both the 8B and 70B runs, honest drift noted per D-052), the grounding/refuse safety story, engineering metrics, a "Honest caveats" section, tech stack, reproduction commands, and repo layout. Every number links back to a `results/*.json` file or a `DECISIONS.md` entry.
 **10c — Finalized resume bullets** backed by the results files above — NOT YET STARTED.
 **10d — Short demo video** — NOT YET STARTED; this is a user action, not something Claude can perform.
 
