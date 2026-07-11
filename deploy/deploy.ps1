@@ -13,7 +13,7 @@ param(
   [string]$Region  = "us-central1",
   [string]$Service = "docsgpt-agent",
   # Comma-separated browser origins allowed by CORS (the Vercel UI URL). Layer 9, D-049.
-  [string]$CorsOrigins = "https://docsgpt-agent.vercel.app"
+  [string]$CorsOrigins = "http://localhost:5173,https://frontend-three-gamma-49.vercel.app"
 )
 # NOT "Stop": gcloud writes benign NOT_FOUND probes to stderr, which PS 5.1 would
 # promote to a terminating error. We gate the real steps on $LASTEXITCODE instead.
@@ -82,7 +82,8 @@ gcloud run deploy $Service `
   --memory 2Gi --cpu 2 --cpu-boost `
   --timeout 600 --min-instances 0 --max-instances 3 `
   --set-secrets $secretFlags `
-  --set-env-vars "LANGFUSE_HOST=https://us.cloud.langfuse.com,GCP_PROJECT_ID=$Project,GCP_REGION=$Region,CORS_ORIGINS=$CorsOrigins"
+  # ^|^ makes '|' the pair separator so commas inside CORS_ORIGINS (multiple origins) survive gcloud parsing.
+  --set-env-vars "^|^LANGFUSE_HOST=https://us.cloud.langfuse.com|GCP_PROJECT_ID=$Project|GCP_REGION=$Region|CORS_ORIGINS=$CorsOrigins"
 if ($LASTEXITCODE -ne 0) { throw "Cloud Run deploy failed" }
 
 $url = (gcloud run services describe $Service --region $Region --project $Project --format="value(status.url)").Trim()
