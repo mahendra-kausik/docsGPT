@@ -1,0 +1,15 @@
+# Upload context for `gcloud builds submit` (Layer 8b). Mirrors .dockerignore:
+# keep src/ + config.yaml + data/corpus (chunks.jsonl); drop the venv, secrets,
+# raw/gold data, results, and caches so the build upload stays small.
+.git
+.venv
+.env
+.cache
+results
+data/raw
+data/gold
+tests
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache

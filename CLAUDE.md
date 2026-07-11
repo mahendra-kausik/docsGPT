@@ -102,3 +102,4 @@ At the **end of every layer**: update `PROGRESS.md` (done / next / blockers) so 
 - If something in `PROJECT_PLAN.md` looks wrong, outdated, or infeasible on free tier, **flag it and stop** —
   do not silently work around it. The plan may contain assumptions that need re-verification (esp. free-tier limits).
 - Keep me in the loop on anything that spends GCP credits or approaches a free-tier limit.
+- When running shell commands, don't dump the whole output into your context and instead limit it using head or tail with how much you might need 
