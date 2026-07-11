@@ -93,13 +93,14 @@ export default function App() {
       {done && done.citations.length > 0 && (
         <section style={{ marginTop: 20 }}>
           <h3>Citations</h3>
-          <ol>
+          <ul style={{ listStyle: "none", paddingLeft: 0 }}>
             {done.citations.map((c) => (
               <li key={c.marker}>
+                [{c.marker}]{" "}
                 <a href={c.source_url} target="_blank" rel="noreferrer">{c.heading_path || c.source_url}</a>
               </li>
             ))}
-          </ol>
+          </ul>
         </section>
       )}
 
