@@ -6,7 +6,8 @@ a quantitative eval harness (retrieval metrics + RAGAS), and Langfuse tracing â€
 free-tier infrastructure.
 
 **Live demo:** https://frontend-three-gamma-49.vercel.app
-**API:** https://docsgpt-agent-ee54gmitka-uc.a.run.app (`/docs` for OpenAPI, `/ask`, `/ask/stream`)
+**API:** https://docsgpt-agent-ee54gmitka-uc.a.run.app â€” no `/` route (visiting the bare URL 404s
+by design); see `/docs` for OpenAPI, or call `/ping`, `/ask`, `/ask/stream`
 
 > Built to be resume-defensible for both SDE and Data Science interviews: every non-trivial
 > engineering choice and every headline number below traces to a decision in `DECISIONS.md`
