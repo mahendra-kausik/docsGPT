@@ -271,3 +271,45 @@ Python · pydantic · pytest · reproducibility · MLOps · disaster recovery.
 - 3 LLM models routed through 1 gateway; 6 free-tier services integrated
   (Groq, Gemini, Qdrant, Cloud Run, Vercel, Langfuse) — **$0 running cost**.
 - Public URL, live, scale-to-zero.
+
+---
+
+## 13. Pre-styled resume bullets (LaTeX, `resumeProjectHeading`)
+
+Two ready-to-drop variants. Same project, different lead: SDE variant leads with deployment/
+architecture/latency; DS/ML variant leads with eval rigor and the rejected-ablation negative result.
+
+### Variant A — SDE-focused
+
+```latex
+\resumeProjectHeading
+    {\href{https://github.com/mahendra-kausik/docsGPT}{\textbf{\large{\underline{DocsGPT-Agent: Cited Agentic RAG over Developer Docs}}} \href{https://github.com/mahendra-kausik/docsGPT}{\raisebox{-0.1\height}\faExternalLink }} $|$ \large{\underline{Python, LangGraph, Qdrant, FastAPI, React/TS}}}{}
+    \resumeItemListStart
+      \resumeItem{\normalsize{Deployed a cited agentic QA system over 11,035 chunks of LangChain docs to a public URL: a LangGraph state machine (retrieve $\rightarrow$ synthesize $\rightarrow$ verify $\rightarrow$ retry/refuse) on Cloud Run (scale-to-zero) with a React/TypeScript UI on Vercel, running entirely on free-tier infrastructure.}}
+
+      \resumeItem{\normalsize{Built hybrid retrieval (bge-small dense + BM25 with Reciprocal Rank Fusion) on Qdrant reaching \textbf{0.693 recall@5} (+13\% over dense) at \textbf{579 ms p50} end-to-end latency; streamed lifecycle events and verified answer tokens over SSE.}}
+
+      \resumeItem{\normalsize{Routed every LLM call (Groq / Gemini) through a single gateway with exponential backoff+jitter, response caching, and model routing; hardened durability with a one-command reindex and traced every agent node + LLM call in Langfuse.}}
+
+      \resumeItem{\normalsize{Enforced grounding structurally: a post-synthesis verifier catches unsupported claims and drives a bounded self-correction retry that refuses rather than hallucinate, with per-claim citations validated post-hoc.}}
+    \resumeItemListEnd
+```
+
+### Variant B — DS/ML-focused
+
+```latex
+\resumeProjectHeading
+    {\href{https://github.com/mahendra-kausik/docsGPT}{\textbf{\large{\underline{DocsGPT-Agent: Cited Agentic RAG over Developer Docs}}} \href{https://github.com/mahendra-kausik/docsGPT}{\raisebox{-0.1\height}\faExternalLink }} $|$ \large{\underline{Python, LangGraph, Qdrant, RAGAS, FastAPI}}}{}
+    \resumeItemListStart
+      \resumeItem{\normalsize{Built a quantitative retrieval eval harness over a 126-question gold set (26 human-verified LangChain-Forum answers + 100 synthetic); benchmarked 4 pipelines per-slice (dense / hybrid / rerank / decomposed) with recall@k, MRR, and nDCG.}}
+
+      \resumeItem{\normalsize{Shipped hybrid retrieval (dense bge-small + BM25 RRF) reaching \textbf{0.693 recall@5} (+13\% over dense); \textbf{measured and rejected} cross-encoder reranking and query decomposition after both showed net-negative recall on real questions at 5--14$\times$ latency, and traced the gap to lexical overlap in synthetic labels.}}
+
+      \resumeItem{\normalsize{Quantified answer quality with a RAGAS harness (fixed Groq-8B judge, fixed seeds, per-metric $n$ reported) measuring faithfulness, relevancy, and correctness; reported honest absolute numbers and known judge-context bias rather than cherry-picking.}}
+
+      \resumeItem{\normalsize{Reduced hallucination via a LangGraph agent that verifies grounding post-synthesis and refuses unsupported answers; deployed the full pipeline to Cloud Run + Vercel with per-node Langfuse tracing, on free-tier infrastructure.}}
+    \resumeItemListEnd
+```
+
+**Note:** +13% is the aggregate (dense 0.612 → hybrid 0.693). If probed, the honest per-slice story
+is hybrid +24% on synthetic but dense winning the real slice (see §3) — documented, defensible.
